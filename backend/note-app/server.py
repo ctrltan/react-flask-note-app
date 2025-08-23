@@ -4,6 +4,7 @@ from decorators import db_connector
 
 app = Flask(__name__)
 
+@db_connector
 @app.route('/')
 def index():
     return "hello world"

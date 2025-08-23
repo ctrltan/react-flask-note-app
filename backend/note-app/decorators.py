@@ -13,9 +13,12 @@ def db_connector(f):
             res = f(cur, *args, **kwargs)
         except:
             conn.rollback()
+            print("Could not perform action")
+            raise
         else:
             conn.commit()
         finally:
+            cur.close()
             conn.close()
         
         return res
