@@ -7,7 +7,7 @@ load_dotenv()
 conn = psycopg2.connect(database="note_db", host="localhost", user="postgres", password=os.environ['DB_PASSWORD'])
 cur = conn.cursor()
 
-cur.execute('''CREATE TABLE IF NOT EXISTS notes (id serial PRIMARY KEY, contents VARCHAR(1000));''')
+cur.execute('''CREATE TABLE IF NOT EXISTS notes (id serial PRIMARY KEY, title VARCHAR(50), contents VARCHAR(1000));''')
 
 conn.commit()
 cur.close()
