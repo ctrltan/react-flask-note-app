@@ -2,16 +2,16 @@ import psycopg2
 import os
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path='/backend/.env')
+load_dotenv(dotenv_path='..env')
 
 def db_connector(database_name="note_db"):
     def decorator(f):
         def wrapper(*args, **kwargs):
-            conn = psycopg2.connect(database=database_name, host="localhost", user="postgres", password=os.environ['DB_PASSWORD'])
+            conn = psycopg2.connect(database=database_name, host="localhost", user="postgres", password=os.getenv('DB_PASSWORD'))
             cur = conn.cursor()
 
             try:
-                res = f(cur, *args, **kwargs)
+                res = f(cur=cur, *args, **kwargs)
             except:
                 conn.rollback()
                 print("Could not perform action")

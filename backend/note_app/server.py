@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from decorators import db_connector
+from note_app.decorators import db_connector
 from flask_cors import CORS
 
 
