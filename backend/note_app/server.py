@@ -1,12 +1,11 @@
 from flask import Flask, request, jsonify
-from decorators import db_connector
+from note_app.decorators import db_connector
 from flask_cors import CORS
 
 
 app = Flask(__name__)
 CORS(app)
 
-@db_connector
 @app.route('/', methods=['GET'])
 def index():
     return jsonify({"message": "hello world"})
