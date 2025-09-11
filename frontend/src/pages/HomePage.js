@@ -1,5 +1,6 @@
-import axios from 'axios';
+
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 export default function HomePage() {
     const [apiData, setApiData] = useState('');
@@ -15,7 +16,7 @@ export default function HomePage() {
 
     return (
         <div>
-            <header>{apiData}</header>
+            <header data-testid='api'>{apiData}</header>
         </div>
     );
 }
