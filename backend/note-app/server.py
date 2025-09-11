@@ -1,13 +1,15 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from decorators import db_connector
+from flask_cors import CORS
 
 
 app = Flask(__name__)
+CORS(app)
 
 @db_connector
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
-    return "hello world"
+    return jsonify({"message": "hello world"})
 
 @app.route('/new_note', methods=['POST'])
 def addNote():
@@ -24,7 +26,6 @@ def getAllNotes():
 @app.route('/notes/delete/<id>', methods=['DELETE'])
 def deleteNote(id):
     pass
-
 
 
 if __name__ == "__main__":
