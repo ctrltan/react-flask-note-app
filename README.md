@@ -42,3 +42,7 @@ This project was created to simulate interative development of a full-stack appl
 ## How to Run
 
 ## Architecture
+
+## Approach & What I've Learnt
+
+
