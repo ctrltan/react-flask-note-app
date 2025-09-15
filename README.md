@@ -36,8 +36,6 @@ This project was created to simulate interative development of a full-stack appl
   * Render pulls Docker images from Docker Hub
   * Deploys application with new feature 
 
-### Unit Tests
-
 
 ## How to Run
 
