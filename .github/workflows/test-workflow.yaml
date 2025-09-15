@@ -16,7 +16,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-        
+      
+      - name: Set up python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Activate virtual environment and install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
       - name: Run backend unit tests
         run: |
           source venv/bin/activate
