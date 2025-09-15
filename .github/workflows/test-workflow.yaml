@@ -4,13 +4,31 @@ on:
   push:
     branches:
       - '**'
+  
+  pull_request:
+    branches:
+      - main
 
 jobs:
   unit-tests:
+    name: Unit tests
     runs-on: ubuntu-latest
+    steps:
+      - name: Run backend unit tests
+        run: |
+          source venv/bin/activate
+          pytest
+        working-directory: ./backend
+
 
 
   integration-tests:
+    needs: unit-tests
+    name: Integration tests
     if: github.event_name == 'pull_request'
-    
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Pass
+        if: false
+        run: echo "Pass"
