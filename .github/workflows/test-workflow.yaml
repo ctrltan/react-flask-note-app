@@ -15,10 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run backend unit tests
+        uses: actions/checkout@v5
         run: |
           source venv/bin/activate
           pytest
-        working-directory: src/backend
+        working-directory: backend
 
 
 
