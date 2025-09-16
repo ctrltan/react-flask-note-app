@@ -39,7 +39,7 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip list
-          pytest
+          pytest -s
         working-directory: backend
       
       - name: Stop running PostgreSQL DB container
