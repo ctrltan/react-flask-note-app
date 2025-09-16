@@ -4,13 +4,57 @@ on:
   push:
     branches:
       - '**'
+  
+  pull_request:
+    branches:
+      - main
 
 jobs:
   unit-tests:
+    name: Unit tests
     runs-on: ubuntu-latest
+
+    env:
+        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Start PostgreSQL DB instance with Docker Compose
+        run: docker compose up -d
+      
+      - name: Set up python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Activate virtual environment and install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+
+      - name: Run backend unit tests
+        run: |
+          pip install -r requirements.txt
+          pip list
+          pytest -s
+        working-directory: backend
+      
+      - name: Stop running PostgreSQL DB container
+        if: always()
+        run: docker compose down
+
 
 
   integration-tests:
+    needs: unit-tests
+    name: Integration tests
     if: github.event_name == 'pull_request'
-    
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Pass
+        if: false
+        run: echo "Pass"
