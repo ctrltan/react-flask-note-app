@@ -43,6 +43,7 @@ This project was created to simulate interative development of a full-stack appl
 
 ## Approach & What I've Learnt
 **Database Management across Dev, Testing and Production Environments**
+
 When developing locally, my approach was to create and delete a test table within a fixture for the backend unit tests. When implementing the first part of continuous integration with GitHub actions, I found that connecting to my locally hosted PostgreSQL DB would need to be set up in the GitHub actions virtual environment too.
 
 My approach to this problem is to use a containerised PostgreSQL database with Docker for local development and testing (locally + GitHub): 
