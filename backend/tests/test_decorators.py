@@ -6,8 +6,8 @@ from note_app.decorators import db_connector
 
 @pytest.fixture
 def db():
-    conn = psycopg2.connect(database="postgres", host="localhost", user="postgres", password=os.getenv('DB_PASSWORD'))
     print(f'db {os.getenv("DB_PASSWORD")}')
+    conn = psycopg2.connect(database="postgres", host="localhost", user="postgres", password=os.getenv('DB_PASSWORD'))
     cur = conn.cursor()
     cur.execute('''CREATE TABLE IF NOT EXISTS test (id serial PRIMARY KEY, title VARCHAR(50), contents VARCHAR(1000));''')
     conn.commit()
