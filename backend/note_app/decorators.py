@@ -7,7 +7,7 @@ load_dotenv(dotenv_path='..env')
 def db_connector(database_name="note_db"):
     def decorator(f):
         def wrapper(*args, **kwargs):
-            conn = psycopg2.connect(database=database_name, host="localhost", user="postgres", password=os.getenv('DB_PASSWORD'))
+            conn = psycopg2.connect(database=database_name, host="localhost", user="postgres", password=os.getenv('POSTGRES_PASSWORD'))
             cur = conn.cursor()
 
             try:
