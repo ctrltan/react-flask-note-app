@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 import os
 from note_app.decorators import db_connector
 
+print(f'Password is: {"set" if os.getenv("POSTGRES_PASSWORD") else "NOT set"}')
+
 @pytest.fixture
 def db():
     conn = psycopg2.connect(database="postgres", host="localhost", user="postgres", password=os.getenv('POSTGRES_PASSWORD'))
