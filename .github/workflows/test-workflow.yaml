@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Env debug
         run: echo "Postgres password is $POSTGRES_PASSWORD"
-        
+
       - name: Checkout code
         uses: actions/checkout@v5
 
@@ -42,6 +42,8 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip list
+          echo "POSTGRES_PASSWORD in Python:"
+          python -c "import os; print(os.getenv('POSTGRES_PASSWORD'))"
           pytest
         working-directory: backend
       
