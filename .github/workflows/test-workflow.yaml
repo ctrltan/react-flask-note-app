@@ -18,6 +18,9 @@ jobs:
         POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 
     steps:
+      - name: Env debug
+        run: echo "Postgres password is $POSTGRES_PASSWORD"
+        
       - name: Checkout code
         uses: actions/checkout@v5
 
