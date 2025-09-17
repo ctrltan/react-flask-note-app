@@ -51,3 +51,5 @@ My approach to this problem is to use a containerised PostgreSQL database with D
 - Easy to spin up the container and tear it down once tests are complete
 - Simpler maintenance e.g. upgrading PostgreSQL in one place and not in each environment
 
+✅ Successful!
+
