@@ -4,11 +4,9 @@ from dotenv import load_dotenv
 import os
 from note_app.decorators import db_connector
 
-print(f'Password is: {"set" if os.getenv("POSTGRES_PASSWORD") else "NOT set"}')
-
 @pytest.fixture
 def db():
-    conn = psycopg2.connect(database="postgres", host="localhost", user="postgres", password=os.getenv('POSTGRES_PASSWORD'))
+    conn = psycopg2.connect(database=os.getenv('POSTGRES_DBNAME'), host=os.getenv('POSTGRES_HOST'), user=os.getenv('POSTGRES_USER'), password=os.getenv('POSTGRES_PASSWORD'))
     cur = conn.cursor()
     cur.execute('''CREATE TABLE IF NOT EXISTS test (id serial PRIMARY KEY, title VARCHAR(50), contents VARCHAR(1000));''')
     conn.commit()

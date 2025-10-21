@@ -16,6 +16,10 @@ jobs:
 
     env:
         POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        POSTGRES_USER: ${{ vars.POSTGRES_USER }}
+        POSTGRES_DBNAME: ${{ vars.POSTGRES_DBNAME }}
+        POSTGRES_HOST: ${{ vars.POSTGRES_HOST }}
+        REACT_APP_BACKEND_URL: ${{ vars.REACT_APP_BACKEND_URL }}
 
     steps:
       - name: Checkout code
@@ -56,5 +60,16 @@ jobs:
 
     steps:
       - name: Pass
+        if: false
+        run: echo "Pass"
+  
+
+  jenkins-trigger:
+    needs: integration-tests
+    name: Jenkins pipeline trigger
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Jenkins pipeline
         if: false
         run: echo "Pass"
