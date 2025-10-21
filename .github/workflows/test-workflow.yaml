@@ -62,14 +62,3 @@ jobs:
       - name: Pass
         if: false
         run: echo "Pass"
-  
-
-  jenkins-trigger:
-    needs: integration-tests
-    name: Jenkins pipeline trigger
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Trigger Jenkins pipeline
-        if: false
-        run: echo "Pass"
