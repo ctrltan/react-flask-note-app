@@ -1,5 +1,12 @@
 pipeline {
     agent any
+    environment {
+        POSTGRES_PASSWORD = credentials('POSTGRES_PASSWORD')
+        POSTGRES_USER = credentials('POSTGRES_USER')
+        POSTGRES_DBNAME = credentials('POSTGRES_DBNAME')
+        POSTGRES_HOST = credentials('POSTGRES_HOST')
+        REACT_APP_BACKEND_URL = credentials('REACT_APP_BACKEND_URL')
+    }
     stages {
         stage('Clone Project Repository') {
             steps {
