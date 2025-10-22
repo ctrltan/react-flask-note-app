@@ -9,11 +9,6 @@ pipeline {
         PATH = "/usr/local/bin:${env.PATH}"
     }
     stages {
-        stage('Clean Workspace') {
-            steps {
-                deleteDir() // Ensures a fresh workspace
-            }
-        }
         stage('Clone Project Repository') {
             steps {
                 git url: 'https://github.com/ctrltan/react-flask-note-app.git', branch: 'main'
