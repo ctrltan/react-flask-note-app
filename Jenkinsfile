@@ -14,55 +14,37 @@ pipeline {
             }
         }
         stage('Build Docker Images') {
-            agent {
-                docker {
-                    image 'docker:latest'
-                    args '-v /var/run/docker.sock:/var/run/docker.sock'
-                }
-            }
             steps {
                 sh 'echo "Building backend image..."'
-                sh 'docker build -t st333phanie/react-flask-note-app-backend:latest -f backend/Dockerfile backend'
+                sh '/usr/local/bin/docker build -t st333phanie/react-flask-note-app-backend:latest -f backend/Dockerfile backend'
 
                 sh 'echo "Building frontend image..."'
-                sh 'docker build -t st333phanie/react-flask-note-app-frontend:latest -f frontend/Dockerfile frontend'
+                sh 'usr/local/bin/docker build -t st333phanie/react-flask-note-app-frontend:latest -f frontend/Dockerfile frontend'
             }
         }
         stage('Run Tests') {
-            agent {
-                docker {
-                    image 'docker:latest'
-                    args '-v /var/run/docker.sock:/var/run/docker.sock'
-                }
-            }
             steps {
                 script {
                     try {
                         withCredentials([string(credentialsId:'postgresPass', variable:'POSTGRES_PASSWORD')]) {
-                            sh 'docker compose -f compose.db.yml -f compose.test.yml up -d'
+                            sh 'usr/local/bin/docker compose -f compose.db.yml -f compose.test.yml up -d'
                         }
-                        sh 'docker compose exec backend pytest -s'
+                        sh 'usr/local/bin/docker compose exec backend pytest -s'
                     } finally {
                         sh 'echo "Tests failed"'
-                        sh 'docker compose down'
+                        sh 'usr/local/bin/docker compose down'
                     }
                 }
             }
         }
         stage('Push Images to Docker Hub') {
-            agent {
-                docker {
-                    image 'docker:latest'
-                    args '-v /var/run/docker.sock:/var/run/docker.sock'
-                }
-            }
             steps {
                 withCredentials([userNamePassword(credentialsId:'dockerHubLogin', passwordVariable:'dockerHubPassword', usernameVariable:'dockerHubUser')]) {
                     sh 'echo "Logging into Docker Hub..."'
-                    sh 'docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}'
+                    sh 'usr/local/bin/docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}'
                     sh 'echo "Pushing images to Docker Hub"'
-                    sh 'docker push st333phanie/react-flask-note-app-backend:latest'
-                    sh 'docker push st333phanie/react-flask-note-app-frontend:latest'
+                    sh 'usr/local/bin/docker push st333phanie/react-flask-note-app-backend:latest'
+                    sh 'usr/local/bin/docker push st333phanie/react-flask-note-app-frontend:latest'
                 }
             }
         }
