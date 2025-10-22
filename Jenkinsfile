@@ -14,6 +14,12 @@ pipeline {
             }
         }
         stage('Build Docker Images') {
+            agent {
+                docker {
+                    image 'docker:latest'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
             steps {
                 sh 'echo "Building backend image..."'
                 sh 'docker build -t st333phanie/react-flask-note-app-backend:latest -f backend/Dockerfile backend'
@@ -23,6 +29,12 @@ pipeline {
             }
         }
         stage('Run Tests') {
+            agent {
+                docker {
+                    image 'docker:latest'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
             steps {
                 script {
                     try {
@@ -38,6 +50,12 @@ pipeline {
             }
         }
         stage('Push Images to Docker Hub') {
+            agent {
+                docker {
+                    image 'docker:latest'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
             steps {
                 withCredentials([userNamePassword(credentialsId:'dockerHubLogin', passwordVariable:'dockerHubPassword', usernameVariable:'dockerHubUser')]) {
                     sh 'echo "Logging into Docker Hub..."'
