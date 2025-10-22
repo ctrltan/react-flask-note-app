@@ -58,4 +58,3 @@ post {
         sh 'docker logout'
     }
 }
-//trigger build change
