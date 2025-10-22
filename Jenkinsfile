@@ -33,7 +33,7 @@ pipeline {
                         sh 'docker compose -f compose.defaultdb.yml ps'
                         sh 'docker compose -f compose.test.yml exec backend pytest -s'
                     } except {
-                        sh 'echo "Tests failed"'
+                        sh 'echo "Tests failed uh oh"'
                     } finally {
                         sh 'docker compose -f compose.defaultdb.yml -f compose.test.yml down'
                     }
