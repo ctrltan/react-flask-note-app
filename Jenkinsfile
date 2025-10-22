@@ -28,7 +28,7 @@ pipeline {
                 script {
                     try {
                         sh 'docker compose -f compose.defaultdb.yml -f compose.test.yml up -d'
-                        sh 'docker compose ps'
+                        sh 'docker compose -f compose.test.yml ps'
                         sh 'docker compose -f compose.test.yml exec backend pytest -s'
                     } finally {
                         sh 'echo "Tests failed"'
