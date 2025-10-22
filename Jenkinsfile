@@ -27,7 +27,8 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh 'docker compose -f compose.defaultdb.yml -f compose.test.yml up -d'
+                        sh 'env | grep POSTGRES || true'
+                        sh 'docker compose -f compose.defaultdb.yml -f compose.test.yml up --build -d'
                         sh 'docker compose -f compose.defaultdb.yml ps'
                         sh 'docker compose -f compose.test.yml exec backend pytest -s'
                     } finally {
