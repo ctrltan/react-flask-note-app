@@ -27,7 +27,9 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh 'docker compose -f compose.db.yml -f compose.test.yml up -d'
+                        withCredentials([string(credentialsId:'postgresPass', variable:'POSTGRES_PASSWORD')]) {
+                            sh 'docker compose -f compose.defaultdb.yml -f compose.test.yml up -d'
+                        }
                         sh 'docker compose ps'
                         sh 'docker compose exec backend pytest -s'
                     } finally {
