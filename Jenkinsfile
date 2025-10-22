@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Clone Project Repository') {
             steps {
-                git 'https://github.com/ctrltan/react-flask-note-app.git'
+                git url: 'https://github.com/ctrltan/react-flask-note-app.git', branch: 'main'
             }
         }
         stage('Build Docker Images') {
