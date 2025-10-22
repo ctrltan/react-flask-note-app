@@ -9,6 +9,9 @@ services:
     
     ports:
       - "8000:8000"
+    
+    volumes:
+      - ./backend:/usr/src/app
   
   frontend:
     image: st333phanie/react-flask-note-app-frontend:latest
