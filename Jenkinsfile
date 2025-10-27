@@ -43,7 +43,7 @@ pipeline {
         }
         stage('Push Images to Docker Hub') {
             steps {
-                withCredentials([userNamePassword(credentialsId:'dockerHubLogin', passwordVariable:'dockerHubPassword', usernameVariable:'dockerHubUser')]) {
+                withCredentials([usernamePassword(credentialsId:'dockerHubLogin', passwordVariable:'dockerHubPassword', usernameVariable:'dockerHubUser')]) {
                     sh 'echo "Logging into Docker Hub..."'
                     sh 'docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}'
                     sh 'echo "Pushing images to Docker Hub"'
