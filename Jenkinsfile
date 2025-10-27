@@ -45,7 +45,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId:'dockerHubLogin', passwordVariable:'dockerHubPassword', usernameVariable:'dockerHubUser')]) {
                     sh 'echo "Logging into Docker Hub..."'
-                    sh 'docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}'
+                    sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
                     sh 'echo "Pushing images to Docker Hub"'
                     sh 'docker push st333phanie/react-flask-note-app-backend:latest'
                     sh 'docker push st333phanie/react-flask-note-app-frontend:latest'
