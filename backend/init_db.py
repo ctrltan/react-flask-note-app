@@ -4,10 +4,12 @@ import psycopg2
 
 load_dotenv()
 
-conn = psycopg2.connect(database="note_db", host="localhost", user="postgres", password=os.environ['DB_PASSWORD'])
+conn = psycopg2.connect(database=os.environ['POSTGRES_DBNAME'], host=os.environ['POSTGRES_HOST'], user=os.environ['POSTGRES_USER'], password=os.environ['POSTGRES_PASSWORD'])
 cur = conn.cursor()
 
+cur.execute('''CREATE TABLE IF NOT EXISTS users (id serial PRIMARY KEY, username VARCHAR(15), password VARCHAR(50));''')
 cur.execute('''CREATE TABLE IF NOT EXISTS notes (id serial PRIMARY KEY, title VARCHAR(50), contents VARCHAR(1000));''')
+cur.execute('''ALTER TABLE notes ADD CONSTRAINT user_id FOREIGN KEY (id) REFERENCES users(id);''')
 
 conn.commit()
 cur.close()
