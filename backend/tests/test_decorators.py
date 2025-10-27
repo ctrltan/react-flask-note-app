@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 import os
 from note_app.decorators import db_connector
 
+print(os.getenv('POSTGRES_DBNAME'))
+
 @pytest.fixture
 def db():
     conn = psycopg2.connect(database=os.getenv('POSTGRES_DBNAME'), host=os.getenv('POSTGRES_HOST'), user=os.getenv('POSTGRES_USER'), password=os.getenv('POSTGRES_PASSWORD'))
