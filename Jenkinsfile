@@ -32,7 +32,7 @@ pipeline {
                         sh 'docker compose -f compose.test.yml exec backend env | grep POSTGRES'
                         sh 'docker compose -f compose.defaultdb.yml ps'
                         sh 'docker compose -f compose.test.yml exec backend pytest -s'
-                    } except {
+                    } catch {
                         sh 'echo "Tests failed uh oh"'
                     } finally {
                         sh 'docker compose -f compose.defaultdb.yml -f compose.test.yml down'
