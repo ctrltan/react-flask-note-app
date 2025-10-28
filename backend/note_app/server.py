@@ -1,7 +1,7 @@
 from flask import Flask, request
 from note_app.decorators import db_connector
-from routes.auth import auth
-from routes.notes import notes
+from note_app.routes.auth import auth
+from note_app.routes.notes import notes
 from flask_cors import CORS
 
 
