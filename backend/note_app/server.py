@@ -3,13 +3,13 @@ from note_app.decorators import db_connector
 from note_app.routes.auth import auth
 from note_app.routes.notes import notes
 from flask_cors import CORS
+from flask_bcrypt import Bcrypt
 
 
 app = Flask(__name__)
 CORS(app)
 
-app.register_blueprint(notes)
-app.register_blueprint(auth)
+bcrypt = Bcrypt(app)
 
 @app.route('/', methods=['GET'])
 def index():
