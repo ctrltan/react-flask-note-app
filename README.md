@@ -53,3 +53,13 @@ My approach to this problem is to use a containerised PostgreSQL database with D
 
 ✅ Successful!
 
+**Authentication, Sessions and Simplified API requests**
+
+Currently, the application protects user notes and enables single-user modidification by using `user_id` and `note_id` specific endpoints. After logging in, the API server sends the user's id and username back to the client to be used in future requests. A JWT token would also be sent to the client and used in requests to confirm the user making requests is authenticated. This was a method I used in a previous project.
+
+Users should be able to use clean urls to make requests to the endpoint without the possibility of access to another user's data. There should also be a method to manage the JWT access token's lifecycle with a refresh token. Access should also be revocable if the user logs out, however, logging out on one device should not end the session on other devices.
+
+My approach to this problem is to generate short-lived access and long-lived refresh JWT tokens. The access token payload will include the token expiry date, `user_id` and other identifiers necessary for requests. Each login will have its own refresh and access tokens to ensure same-account logins across devices and browsers and independent. Using a key-value cache such as Redis, the refresh token will be obtained using the login id as a key once the access token expires:
+- Protects user ids and allows for cleaner URLs
+- Simplifies authentication
+- Allows for future scalability e.g. decomposition of backend into services with Redis cache as its own independently scalable service
