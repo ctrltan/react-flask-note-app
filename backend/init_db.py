@@ -11,6 +11,9 @@ cur.execute('''CREATE TABLE IF NOT EXISTS users (user_id serial PRIMARY KEY, use
 
 cur.execute('''CREATE TABLE IF NOT EXISTS notes (note_id serial PRIMARY KEY, title VARCHAR(50), contents VARCHAR(1000), user_id INT REFERENCES users(user_id));''')
 
+cur.execute('''INSERT INTO users (username, email, password) VALUES ('testuser1', 'testuser1@email.com', 'Testuser1!')''')
+cur.execute('''INSERT INTO users (username, email, password) VALUES ('testuser2', 'testuser2@email.com', 'Testuser2!')''')
+
 conn.commit()
 cur.close()
 conn.close()

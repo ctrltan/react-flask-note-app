@@ -2,7 +2,7 @@ import psycopg2
 import os
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path='..env')
+load_dotenv('.env')
 
 def db_connector(database_name=os.getenv('POSTGRES_DBNAME')):
     def decorator(f):
@@ -23,5 +23,6 @@ def db_connector(database_name=os.getenv('POSTGRES_DBNAME')):
                 conn.close()
             
             return res
+        wrapper.__name__ = f.__name__
         return wrapper
     return decorator
