@@ -63,3 +63,5 @@ My approach to this problem is to generate short-lived access and long-lived ref
 - Protects user ids and allows for cleaner URLs
 - Simplifies authentication
 - Allows for future scalability e.g. decomposition of backend into services with Redis cache as its own independently scalable service
+
+✅ Successful!
