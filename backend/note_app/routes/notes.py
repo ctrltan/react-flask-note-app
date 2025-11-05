@@ -2,18 +2,18 @@ from flask import Blueprint
 
 notes = Blueprint('notes', __name__)
 
-@notes.route('/new_note', methods=['POST'])
+@notes.route('/<user_id>/notes/new_note', methods=['POST'])
 def addNote():
     pass
 
-@notes.route('/<int:note_id>', methods=['GET', 'POST'])
+@notes.route('/<user_id>/notes/<int:note_id>', methods=['GET', 'POST'])
 def getNote(id):
     pass
 
-@notes.route('/', methods=['GET'])
+@notes.route('/<user_id>/notes', methods=['GET'])
 def getAllNotes():
     pass
 
-@notes.route('/delete/<int:note_id>', methods=['DELETE'])
+@notes.route('/<user_id>/notes/delete/<int:note_id>', methods=['DELETE'])
 def deleteNote(id):
     pass

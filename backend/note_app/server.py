@@ -1,12 +1,17 @@
 from flask import Flask, request
 from note_app.decorators import db_connector
+from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
+from note_app.helpers.helper_utils import JWT_SECRET_KEY
 
 app = Flask(__name__)
 CORS(app)
 
+app.config['JWT_SECRET_KEY'] = JWT_SECRET_KEY
+
 bcrypt = Bcrypt(app)
+jwt = JWTManager(app)
 
 @app.route('/', methods=['GET'])
 def index():
