@@ -66,3 +66,7 @@ My approach to this problem is to generate short-lived access and long-lived ref
 - Allows for future scalability e.g. decomposition of backend into services with Redis cache as its own independently scalable service
 
 ✅ Successful!
+
+**Near-Real Time Note Autosaving for Improved Database Performance**
+
+The current approach for the app is for users to manually save notes after edits, writing over the existing note content in the PostgreSQL database. Whilst this approach is simple and fast to implement, it could negatively affect the application's performance and consequentially, user experience, as the user base increases. For example, frequent and concurrent note edits from multiple users at once increases database load. In the case of database connection failure, large edits could be lost. 
