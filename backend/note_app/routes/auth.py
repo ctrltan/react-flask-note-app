@@ -14,7 +14,7 @@ PASSWORD_PATTERN = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,
 @auth.route('/signup', methods=['POST'])
 @db_connector()
 def signup(cur=None):
-    req_data = (request.get_json())['data']
+    req_data = request.get_json()
 
     username = req_data['username']
     email = req_data['email']
@@ -61,7 +61,7 @@ def signup(cur=None):
 @auth.route('/login', methods=['POST'])
 @db_connector()
 def login(cur=None):
-    req_data = (request.get_json())['data']
+    req_data = request.get_json()
 
     username = req_data['username']
     password = req_data['password']
@@ -82,8 +82,21 @@ def login(cur=None):
         
         user_id = user[0]
         
-        return { 'user_id': user_id, 'username': username }
+        session_id = str(uuid4())
+        refresh_token, access_token = token_creator({'session_id': session_id, 'user_id': user_id, 'username': username})
+            
+        create_session(session_id, user_id, refresh_token)
+
+        return { 'status': 200, 'message': {'access_token': access_token, 'session_id': session_id, 'user_id': user_id, 'username': username} }
 
     except Exception as ex:
         return { 'message': ex.args[0] }
+    
+
+@auth.route('/logout', methods=['POST'])
+def logout():
+    #receive session id, user id, access token - have to be logged in to logout
+    #delete session from redis - use session id and user id to make sure correct session being removed
+    #when successful, frontend will delete access token from the cookies
+    pass
     

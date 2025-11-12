@@ -4,8 +4,6 @@ from datetime import datetime, timedelta
 from note_app.helpers.helper_utils import REDIS_USER, REDIS_PASSWORD, REDIS_PORT
 
 
-print(REDIS_PORT)
-
 class RedisManager:
 
     connection_pool = deque()
@@ -30,25 +28,3 @@ class RedisManager:
 
         except Exception as ex:
             print('didnt work')
-
-
-
-
-"""Basic connection example.
-"""
-
-"""
-
-r = redis.Redis(
-    host='redis-17899.crce204.eu-west-2-3.ec2.redns.redis-cloud.com',
-    port=17899,
-    decode_responses=True,
-    username="default",
-    password="*******",
-)
-
-success = r.set('foo', 'bar')
-# True
-
-result = r.get('foo')
-print(result) """

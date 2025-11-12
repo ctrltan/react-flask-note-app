@@ -8,7 +8,7 @@ conn = psycopg2.connect(database=os.environ['POSTGRES_DBNAME'], host=os.environ[
 cur = conn.cursor()
 
 cur.execute('''CREATE TABLE IF NOT EXISTS users (user_id VARCHAR(36) PRIMARY KEY, username VARCHAR(15) NOT NULL UNIQUE, email VARCHAR(300) NOT NULL UNIQUE, password VARCHAR(80) NOT NULL UNIQUE);''')
-cur.execute('''CREATE TABLE IF NOT EXISTS notes (note_id serial PRIMARY KEY, title VARCHAR(240), contents TEXT, user_id VARCHAR(36) REFERENCES users(user_id));''')
+cur.execute('''CREATE TABLE IF NOT EXISTS notes (note_id serial PRIMARY KEY, title VARCHAR(240), contents TEXT, user_id VARCHAR(36) REFERENCES users(user_id)), last_accessed TIMESTAMP NOT NULL;''')
 
 conn.commit()
 cur.close()

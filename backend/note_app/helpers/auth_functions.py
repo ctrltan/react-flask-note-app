@@ -9,7 +9,7 @@ from note_app.helpers.helper_utils import AES_ENCRYPTION_KEY, AES_INITIALISATION
 def email_validation(email):
     pass
 
-def email_encryption(email: str):
+def email_encryption(email: str) -> str:
     key = bytes.fromhex(AES_ENCRYPTION_KEY)
     iv = bytes.fromhex(AES_INITIALISATION_VECTOR)
     cipher = AES.new(key, AES.MODE_CBC, iv)
@@ -21,7 +21,7 @@ def email_encryption(email: str):
 
     return encrypted_email
 
-def token_creator(payload: dict):
+def token_creator(payload: dict) -> tuple[str, str]:
     access_claims = {'user_id': payload['user_id'], 'session_id': payload['session_id'], 'username': payload['username']}
     
     access_token = create_access_token(payload['user_id'], expires_delta=timedelta(minutes=15), additional_claims=access_claims)
@@ -29,6 +29,6 @@ def token_creator(payload: dict):
 
     return refresh_token, access_token
 
-def create_session(session_id: str, user_id: str, refresh_token: str):
+def create_session(session_id: str, user_id: str, refresh_token: str) -> None:
     r_conn = RedisManager()
     r_conn.add_session_key(session_id, user_id, refresh_token)

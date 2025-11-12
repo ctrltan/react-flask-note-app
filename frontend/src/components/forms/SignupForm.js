@@ -1,30 +1,34 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
+import { Navigate, useNavigate } from 'react-router-dom';
+import { UserContext } from "../../App";
 
-const postSignup = async (formData) => {
-    const username = formData.get('username');
-    const password = formData.get('password');
-    const email = formData.get('email');
-
-    try {
-        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/signup`, {
-            data: {
-                'username': username,
-                'password': password,
-                'email': email,
-            }
-        });
-        console.log(res.data)
-    } catch (e) {
-        console.log(e);
-    };
-}
-
-const SignupForm = () => {
+export default function SignupForm() {
     const [username, setUsername] = useState(''); 
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
+    const {user, setUser} = useContext(UserContext);
+    const nav = useNavigate();
 
+
+    const postSignup = async () => {        
+        try {
+            const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/signup`, {
+                    'username': username,
+                    'password': password,
+                    'email': email,
+            });
+            const {access_token, session_id, user_id, confirmedUsername} = res.data.message
+        
+            setUser({ 'user_id': user_id, 'username': username });
+            localStorage.setItem('accessToken', access_token);
+            localStorage.setItem('sessionId', session_id);
+
+            nav('/');
+        } catch (e) {
+            console.log(e);
+        };
+    };
 
     return (
         <div>
@@ -59,5 +63,3 @@ const SignupForm = () => {
         </div>
     );
 }
-
-export default SignupForm;
