@@ -3,15 +3,6 @@ from pytest_mock import MockerFixture
 from flask import Flask
 from note_app.server import app
 
-"""
-Home page route
-    - 
-
-DB Decorator
-    -
-
-"""
-
 @pytest.fixture
 def client():
     app.config['TESTING'] = True

@@ -1,10 +1,10 @@
 import { useEffect } from "react"
 
-function noteSubmit() {
+const noteSubmit = () => {
     console.log("Form works")
 }
 
-export default function NoteForm() {
+const NoteForm = () => {
     return (
         <form action={noteSubmit}>
             <input name="title"/>
@@ -13,3 +13,5 @@ export default function NoteForm() {
         </form>
     );
 }
+
+export default NoteForm;
