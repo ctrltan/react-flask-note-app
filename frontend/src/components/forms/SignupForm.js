@@ -7,6 +7,7 @@ export default function SignupForm() {
     const [username, setUsername] = useState(''); 
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
+    const [message, setMessage] = useState(null);
     const {user, setUser} = useContext(UserContext);
     const nav = useNavigate();
 
@@ -17,12 +18,16 @@ export default function SignupForm() {
                     'username': username,
                     'password': password,
                     'email': email,
-            });
-            const {access_token, session_id, user_id, confirmedUsername} = res.data.message
+            }, { withCredentials: true });
+
+            if (typeof res.data.message === 'string') {
+                setMessage(res.data.message);
+                return;
+            };
+
+            const {user_id, x} = res.data.message
         
-            setUser({ 'user_id': user_id, 'username': username });
-            localStorage.setItem('accessToken', access_token);
-            localStorage.setItem('sessionId', session_id);
+            setUser({ userId: user_id, username: username });
 
             nav('/');
         } catch (e) {
@@ -60,6 +65,7 @@ export default function SignupForm() {
                 </label>
                 <button type="submit">Sign Up</button>
             </form>
+            <p>{message}</p>
         </div>
     );
 }

@@ -6,7 +6,7 @@ from flask_bcrypt import Bcrypt
 from note_app.helpers.helper_utils import JWT_SECRET_KEY
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 app.config['JWT_SECRET_KEY'] = JWT_SECRET_KEY
 

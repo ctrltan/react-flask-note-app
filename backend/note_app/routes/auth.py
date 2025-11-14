@@ -1,13 +1,15 @@
-from flask import Blueprint, request, make_response
+from flask import Blueprint, request, make_response, jsonify
+from datetime import timedelta
+from flask_cors import CORS
 from note_app.decorators import db_connector
-from note_app.helpers.auth_functions import email_validation, email_encryption, token_creator, create_session
-from note_app.helpers.redis_manager import RedisManager
+from note_app.helpers.auth_functions import email_validation, email_encryption, token_creator, create_session, token_decoder, remove_session
 from note_app.server import bcrypt
 from uuid import uuid4
 import ulid
 import re
 
 auth = Blueprint('auth', __name__)
+#CORS(auth, supports_credentials=True, origins=['http://localhost:3000'])
 
 PASSWORD_PATTERN = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
 
@@ -49,7 +51,12 @@ def signup(cur=None):
             
             create_session(session_id, user_id, refresh_token)
 
-            return { 'status': 200, 'message': { 'access_token': access_token, 'session_id': session_id, 'user_id': user_id, 'username': username } }
+            response = make_response(jsonify({'message': { 'user_id': user_id, 'username': username }}))
+
+            response.set_cookie('access_token', access_token, max_age=timedelta(minutes=15), httponly=True, samesite=None, secure=True)
+            response.set_cookie('session_id', session_id, max_age=timedelta(days=30), httponly=True, samesite=None, secure=True)
+
+            return response
         except Exception as e:
             print(e)
             raise Exception('Could not create this account. Try again later')
@@ -87,7 +94,12 @@ def login(cur=None):
             
         create_session(session_id, user_id, refresh_token)
 
-        return { 'status': 200, 'message': {'access_token': access_token, 'session_id': session_id, 'user_id': user_id, 'username': username} }
+        response = make_response(jsonify({'message': { 'user_id': user_id, 'username': username }}))
+
+        response.set_cookie('access_token', access_token, max_age=timedelta(minutes=15), httponly=True, samesite='None', secure=True)
+        response.set_cookie('session_id', session_id, max_age=timedelta(days=30), httponly=True, samesite='None', secure=True)
+
+        return response
 
     except Exception as ex:
         return { 'message': ex.args[0] }
@@ -95,8 +107,21 @@ def login(cur=None):
 
 @auth.route('/logout', methods=['POST'])
 def logout():
-    #receive session id, user id, access token - have to be logged in to logout
-    #delete session from redis - use session id and user id to make sure correct session being removed
-    #when successful, frontend will delete access token from the cookies
-    pass
+    access_token = request.cookies.get('access_token')
+    try:
+        token_payload = token_decoder(access_token)
+
+        remove_session(token_payload['session_id'])
+
+        response = make_response()
+        response.delete_cookie('access_token')
+        response.delete_cookie('session_id')
+
+        return response, 200
+    except Exception as ex:
+        return { 'message': ex.args[0] }
     
+
+@auth.route('/auth/refresh', methods=['POST'])
+def refresh():
+    access_token = request.headers.get()

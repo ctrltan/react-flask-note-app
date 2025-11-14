@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage.js';
 import LoginPage from './pages/LoginPage.js';
 import SignupPage from './pages/SignupPage.js';
 import usePersistedState from './components/hooks/persistentState.js';
+import axios from 'axios';
 
 export const UserContext = createContext();
 

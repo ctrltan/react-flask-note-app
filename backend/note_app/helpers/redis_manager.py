@@ -1,13 +1,11 @@
 import redis
+from redis.cache import CacheConfig
 from collections import deque
 from datetime import datetime, timedelta
 from note_app.helpers.helper_utils import REDIS_USER, REDIS_PASSWORD, REDIS_PORT
 
 
 class RedisManager:
-
-    connection_pool = deque()
-    max_pool_size = 20
 
     def __init__(self):
         self.r = redis.Redis(
@@ -28,3 +26,31 @@ class RedisManager:
 
         except Exception as ex:
             print('didnt work')
+    
+    def get_session(self, session_id: str) -> dict | None:
+        try:
+            occurrences = self.r.exists(f'session_id:{session_id}')
+            if occurrences == 0:
+                return None
+        
+            return self.r.hkeys(f'session_id:{session_id}')
+        except Exception as ex:
+            print(ex)
+    
+    def valid_session(self, session_id: str) -> bool:
+        try:
+            occurrences = self.r.exists(f'session_id:{session_id}')
+            if occurrences == 0:
+                return False
+            
+            return True
+        except Exception as ex:
+            print(ex)
+
+
+    def delete_session(self, session_id: str):
+        try:
+            self.r.expire(f'session_id:{session_id}', -1)
+            return True
+        except Exception as ex:
+            print(ex)

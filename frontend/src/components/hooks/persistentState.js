@@ -4,7 +4,7 @@ const usePersistedState = (key) => {
     const [value, setValue] = useState(() => {
         const currValue = localStorage.getItem(key);
         
-        if (currValue) {
+        if (currValue !== null) {
             return JSON.parse(currValue);
         } else {
             return currValue;
@@ -12,7 +12,9 @@ const usePersistedState = (key) => {
     });
 
     useEffect(() => {
-        localStorage.setItem(key, JSON.stringify(value));
+        if (value !== null) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
     }, [value, key]);
     return [value, setValue];
 };

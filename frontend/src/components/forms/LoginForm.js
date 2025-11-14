@@ -6,28 +6,33 @@ import { useNavigate } from "react-router-dom";
 export default function LoginForm() {
     const [username, setUsername] = useState(''); 
     const [password, setPassword] = useState('');
+    const [message, setMessage] = useState(null);
     const {user, setUser} = useContext(UserContext);
     const nav = useNavigate();
 
     const postLogin = async () => {
-        if (!user) {
+        console.log(user)
+        if (user === null) {
             try {
                 const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`, {
                     'username': username,
                     'password': password,
-                });
-                const {access_token, session_id, user_id, confirmedUsername} = res.data.message;
+                }, { withCredentials: true });
 
-                setUser({ user_id: user_id, username: username });
-                localStorage.setItem('accessToken', access_token);
-                localStorage.setItem('sessionId', session_id);
+                if (typeof res.data.message === 'string') {
+                    setMessage(res.data.message);
+                    return;
+                };
+
+                const {user_id, x} = res.data.message;
+                
+                setUser({ userId: user_id, username: username });
 
                 nav('/');
             } catch (e) {
                 console.log(e);
             };
         } else {
-            console.log('already in');
             nav('/');
         }
     }
@@ -54,6 +59,7 @@ export default function LoginForm() {
                 </label>
                 <button type="submit">Login</button>
             </form>
+            <p>{message}</p>
         </div>
     );
 }
