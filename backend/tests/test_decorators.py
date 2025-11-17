@@ -2,7 +2,7 @@ import pytest
 import psycopg2
 from dotenv import load_dotenv
 import os
-from note_app.decorators import db_connector
+from note_app.helpers.decorators import db_connector
 
 @pytest.fixture
 def db():

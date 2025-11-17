@@ -57,3 +57,15 @@ def remove_session(session_id: str) -> bool:
         return True
     except Exception as ex:
         return { 'message': ex }
+    
+def is_valid_session(session_id: str) -> bool:
+    try:
+        r_conn = RedisManager()
+        valid = r_conn.valid_session(session_id)
+
+        if not valid:
+            raise Exception('Invalid session')
+        
+        return True
+    except Exception as ex:
+        return False, ex

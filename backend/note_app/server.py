@@ -1,5 +1,5 @@
 from flask import Flask, request
-from note_app.decorators import db_connector
+from note_app.helpers.decorators import db_connector
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
