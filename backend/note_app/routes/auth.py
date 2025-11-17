@@ -1,8 +1,8 @@
 from flask import Blueprint, request, make_response, jsonify
 from datetime import timedelta
 from flask_cors import CORS
-from note_app.decorators import db_connector
-from note_app.helpers.auth_functions import email_validation, email_encryption, token_creator, create_session, token_decoder, remove_session
+from note_app.helpers.decorators import db_connector
+from note_app.helpers.auth_functions import email_validation, email_encryption, token_creator, create_session, token_decoder, remove_session, is_valid_session
 from note_app.server import bcrypt
 from uuid import uuid4
 import ulid
@@ -54,9 +54,9 @@ def signup(cur=None):
             response = make_response(jsonify({'message': { 'user_id': user_id, 'username': username }}))
 
             response.set_cookie('access_token', access_token, max_age=timedelta(minutes=15), httponly=True, samesite=None, secure=True)
-            response.set_cookie('session_id', session_id, max_age=timedelta(days=30), httponly=True, samesite=None, secure=True)
+            response.set_cookie('refresh_token', refresh_token, max_age=timedelta(days=30), httponly=True, samesite=None, secure=True)
 
-            return response
+            return response, 200
         except Exception as e:
             print(e)
             raise Exception('Could not create this account. Try again later')
@@ -97,9 +97,9 @@ def login(cur=None):
         response = make_response(jsonify({'message': { 'user_id': user_id, 'username': username }}))
 
         response.set_cookie('access_token', access_token, max_age=timedelta(minutes=15), httponly=True, samesite='None', secure=True)
-        response.set_cookie('session_id', session_id, max_age=timedelta(days=30), httponly=True, samesite='None', secure=True)
+        response.set_cookie('refresh_token', refresh_token, max_age=timedelta(days=30), httponly=True, samesite='None', secure=True)
 
-        return response
+        return response, 200
 
     except Exception as ex:
         return { 'message': ex.args[0] }
@@ -115,7 +115,7 @@ def logout():
 
         response = make_response()
         response.delete_cookie('access_token')
-        response.delete_cookie('session_id')
+        response.delete_cookie('refresh_token')
 
         return response, 200
     except Exception as ex:
@@ -124,4 +124,30 @@ def logout():
 
 @auth.route('/auth/refresh', methods=['POST'])
 def refresh():
-    access_token = request.headers.get()
+    refresh_token = request.cookies.get('refresh_token')
+    req_data = request.get_json()
+
+    user_id = req_data['user_id']
+    username = req_data['username']
+
+    try:
+        if not refresh_token:
+            raise Exception('Invalid refresh token')
+        
+        token_payload = token_decoder(refresh_token)
+        session_id = token_payload['sub']
+
+        valid_session = is_valid_session(session_id)
+
+        if not valid_session:
+            raise Exception('Session ended')
+
+        access_token, x = token_creator({ 'user_id': user_id, 'session_id': session_id, 'username': username })
+
+        response = make_response()
+        response.set_cookie('access_token', access_token)
+
+        return response, 200
+    except Exception as ex:
+        return { 'message': ex.args[0] }, 401
+    
