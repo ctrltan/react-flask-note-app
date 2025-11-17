@@ -1,12 +1,12 @@
 import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { createContext, useContext, useState } from 'react';
 import HomePage from './pages/HomePage.js';
 import LoginPage from './pages/LoginPage.js';
 import SignupPage from './pages/SignupPage.js';
 import usePersistedState from './components/hooks/persistentState.js';
-import axios from 'axios';
+import ProtectedRoute from './components/wrappers/ProtectedRoute.js';
 
 export const UserContext = createContext();
 
@@ -21,6 +21,9 @@ function App() {
           <Route path='/' element={<HomePage />} />
           <Route path='/login' element={<LoginPage />}/>
           <Route path='/signup' element={<SignupPage />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path='/notes'/>
+          </Route>
         </Routes>
       </div>
     </Router>

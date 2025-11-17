@@ -124,9 +124,6 @@ def logout():
 
 @auth.route('/auth/refresh', methods=['POST'])
 def refresh():
-    #check refresh token still valid
-    #If cookie session not valid then deny refresh and trigger logout - if session is not valid then refresh isnt
-    #generate new access token and send back to user as cookie
     refresh_token = request.cookies.get('refresh_token')
     req_data = request.get_json()
 
