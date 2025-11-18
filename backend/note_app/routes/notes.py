@@ -5,7 +5,7 @@ from note_app.helpers.auth_functions import token_decoder
 notes = Blueprint('notes', __name__)
 
 @notes.before_request
-def checkTokens():
+def check_tokens():
     access_token = request.cookies.get('access_token')
     payload = token_decoder(access_token)
 

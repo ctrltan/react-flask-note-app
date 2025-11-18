@@ -2,14 +2,13 @@ from flask import Blueprint, request, make_response, jsonify
 from datetime import timedelta
 from flask_cors import CORS
 from note_app.helpers.decorators import db_connector
-from note_app.helpers.auth_functions import email_validation, email_encryption, token_creator, create_session, token_decoder, remove_session, is_valid_session
+from note_app.helpers.auth_functions import email_encryption, token_creator, create_session, token_decoder, remove_session, is_valid_session
 from note_app.server import bcrypt
 from uuid import uuid4
 import ulid
 import re
 
 auth = Blueprint('auth', __name__)
-#CORS(auth, supports_credentials=True, origins=['http://localhost:3000'])
 
 PASSWORD_PATTERN = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
 
@@ -34,7 +33,7 @@ def signup(cur=None):
         password_match = re.fullmatch(PASSWORD_PATTERN, password)
 
         if password_match == None:
-            raise Exception('Password not valid!')
+            raise Exception('')
         
         try:
             user_id = str(ulid.new())
