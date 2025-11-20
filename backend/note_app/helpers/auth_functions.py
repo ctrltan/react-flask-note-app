@@ -30,18 +30,22 @@ def token_creator(payload: dict) -> tuple[str, str]:
     return refresh_token, access_token
 
 def token_decoder(token: str) -> dict | None:
-    payload = decode_token(token, allow_expired=True)
+    try:
+        payload = decode_token(token, allow_expired=True)
+        
+        return payload
+    except:
+        return None
 
-    return payload
-
-def create_session(session_id: str, user_id: str, refresh_token: str) -> bool | Exception:
+def create_session(session_id: str, user_id: str, refresh_token: str) -> bool:
     try:
         r_conn = RedisManager()
         r_conn.add_session_key(session_id, user_id, refresh_token)
 
         return True
     except Exception as ex:
-        return { 'message': ex }
+        print(ex)
+        return False
 
 
 def remove_session(session_id: str) -> bool:
@@ -56,7 +60,8 @@ def remove_session(session_id: str) -> bool:
 
         return True
     except Exception as ex:
-        return { 'message': ex }
+        print(ex)
+        return False
     
 def is_valid_session(session_id: str) -> bool:
     try:
@@ -68,4 +73,5 @@ def is_valid_session(session_id: str) -> bool:
         
         return True
     except Exception as ex:
-        return False, ex
+        print(ex)
+        return False

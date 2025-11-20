@@ -33,7 +33,7 @@ def signup(cur=None):
         password_match = re.fullmatch(PASSWORD_PATTERN, password)
 
         if password_match == None:
-            raise Exception('')
+            raise Exception('Invalid password')
         
         try:
             user_id = str(ulid.new())
@@ -118,7 +118,8 @@ def logout():
 
         return response, 200
     except Exception as ex:
-        return { 'message': ex.args[0] }
+        print(ex)
+        return { 'message': 'Could not log you out at this time' }
     
 
 @auth.route('/auth/refresh', methods=['POST'])

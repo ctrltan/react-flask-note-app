@@ -1,6 +1,5 @@
 from dotenv import load_dotenv
 import os
-load_dotenv('..env')
 
 AES_ENCRYPTION_KEY = os.getenv('AES_ENCRYPTION_KEY')
 AES_INITIALISATION_VECTOR = os.getenv('AES_INITIALISATION_VECTOR')

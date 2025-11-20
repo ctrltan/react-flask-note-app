@@ -23,9 +23,8 @@ class RedisManager:
                 'refresh_token': refresh_token
             })
             self.r.expire(f'session_id:{session_id}', time=timedelta(days=30))
-
         except Exception as ex:
-            print('didnt work')
+            print(ex)
     
     def get_session(self, session_id: str) -> dict | None:
         try:
@@ -36,6 +35,7 @@ class RedisManager:
             return self.r.hkeys(f'session_id:{session_id}')
         except Exception as ex:
             print(ex)
+            return None
     
     def valid_session(self, session_id: str) -> bool:
         try:
@@ -46,6 +46,7 @@ class RedisManager:
             return True
         except Exception as ex:
             print(ex)
+            return False
 
 
     def delete_session(self, session_id: str):
@@ -54,3 +55,4 @@ class RedisManager:
             return True
         except Exception as ex:
             print(ex)
+            return False
