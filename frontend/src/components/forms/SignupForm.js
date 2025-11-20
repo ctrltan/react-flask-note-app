@@ -121,6 +121,20 @@ export default function SignupForm() {
         };
     }, [password]);
 
+    useEffect(() => {
+        if (email === '') {
+            setBtnDisabled(true);
+        }
+
+        if (username === '') {
+            setBtnDisabled(true);
+        }
+
+        if (email !== '' && username !== '' && password !== '') {
+            setBtnDisabled(false);
+        }
+    }, [email, username, password])
+
     const postSignup = async () => {        
         try {
             const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/signup`, {

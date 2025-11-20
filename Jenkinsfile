@@ -6,6 +6,9 @@ pipeline {
         POSTGRES_DBNAME = credentials('POSTGRES_DBNAME')
         POSTGRES_HOST = credentials('POSTGRES_HOST')
         REACT_APP_BACKEND_URL = credentials('REACT_APP_BACKEND_URL')
+        AES_ENCRYPTION_KEY = credentials('AES_ENCRYPTION_KEY')
+        AES_INITIALISATION_VECTOR = credentials('AES_INITIALISATION_VECTOR')
+        JWT_SECRET_KEY = credentials('JWT_SECRET_KEY')
         PATH = "/usr/local/bin:${env.PATH}"
     }
     stages {
