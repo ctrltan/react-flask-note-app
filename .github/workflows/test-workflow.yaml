@@ -27,7 +27,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-        run: 'echo ${{ secrets.JWT_SECRET_KEY }}'
 
       - name: Start PostgreSQL DB instance with Docker Compose
         run: docker compose -f compose.db.yml up -d
@@ -39,6 +38,7 @@ jobs:
       
       - name: Activate virtual environment and install dependencies
         run: |
+          echo ${{ secrets.JWT_SECRET_KEY }}
           python -m venv venv
           source venv/bin/activate
           pip install --upgrade pip
