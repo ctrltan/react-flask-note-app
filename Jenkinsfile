@@ -17,14 +17,14 @@ pipeline {
                 git url: 'https://github.com/ctrltan/react-flask-note-app.git', branch: 'main'
             }
         }
-        stage('Login to Docker') {
+        /* stage('Login to Docker') {
             steps {
-                 withCredentials([usernamePassword(credentialsId:'dockerHubLogin', passwordVariable:'dockerHubPassword', usernameVariable:'dockerHubUser')]) {
+                withCredentials([usernamePassword(credentialsId:'dockerHubLogin', passwordVariable:'dockerHubPassword', usernameVariable:'dockerHubUser')]) {
                     sh 'echo "Logging into Docker Hub..."'
-                    sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+                    sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword} --password-stdin"
                 }
             }
-        }
+        } */
         stage('Build Docker Images') {
             steps {
                 sh 'echo "Building backend image..."'
