@@ -28,6 +28,7 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 sh 'echo "Building backend image..."'
+                sh 'whoami'
                 sh 'docker build -t st333phanie/react-flask-note-app-backend:latest -f backend/Dockerfile backend'
 
                 sh 'echo "Building frontend image..."'
