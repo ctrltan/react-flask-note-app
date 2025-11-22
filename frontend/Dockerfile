@@ -1,4 +1,4 @@
-FROM node:23.2-alpine
+FROM --platform=linux/arm64 node:23.2-alpine
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
