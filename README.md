@@ -1,6 +1,8 @@
-# CI/CD for React-Flask Note-Taking App
+# NoteTogether: React-Flask Note-Taking App
 
-This project was created to simulate interative development of a full-stack application, with the support of an automated CI/CD pipeline.
+Live Link: https://note-together.onrender.com/
+
+This is NoteTogether! A note-taking app with collaborative note-taking capabilities! Using a React client and a Flask API, users are able to create, edit, delete and share notes with other users. Using an Agile development process, I am able to implement new features and their UI along with unit tests!
 
 ## Infrastructure
 
@@ -70,3 +72,5 @@ My approach to this problem is to generate short-lived access and long-lived ref
 **Near-Real Time Note Autosaving for Improved Database Performance**
 
 The current approach for the app is for users to manually save notes after edits, writing over the existing note content in the PostgreSQL database. Whilst this approach is simple and fast to implement, it could negatively affect the application's performance and consequentially, user experience, as the user base increases. For example, frequent and concurrent note edits from multiple users at once increases database load. In the case of database connection failure, large edits could be lost. 
+
+Users should have up to date notes and be able to continue editing even if a save fails or they go offline. 
