@@ -49,6 +49,7 @@ export default function HomePage() {
 
     useEffect(() => {
         const getData = async () => {
+            console.log(process.env.REACT_APP_BACKEND_URL)
             const response = await axios.get(process.env.REACT_APP_BACKEND_URL);
             setApiData(response.data.message);
         }
