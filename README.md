@@ -39,11 +39,6 @@ This is NoteTogether! A note-taking app with collaborative note-taking capabilit
   * Render pulls Docker images from Docker Hub
   * Deploys application with new feature 
 
-
-## How to Run
-
-## Architecture
-
 ## Approach & What I've Learnt
 **Database Management across Dev, Testing and Production Environments**
 
