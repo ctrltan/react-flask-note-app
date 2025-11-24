@@ -8,7 +8,7 @@ import os
 from dotenv import load_dotenv
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True, origins={os.getenv('FLASK_APP_CLIENT_URL')})
 
 load_dotenv('.env')
 
