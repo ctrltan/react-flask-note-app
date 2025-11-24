@@ -47,8 +47,10 @@ pipeline {
             }
         }
         stage('Rebuild Frontend with Production URL') {
-            sh 'echo "Building frontend image..."'
-            sh "docker buildx build --platform linux/amd64 --build-arg REACT_APP_BACKEND_URL=${PROD_URL} -t st333phanie/react-flask-note-app-frontend:latest -f frontend/Dockerfile frontend"
+            steps {
+                sh 'echo "Building frontend image..."'
+                sh "docker buildx build --platform linux/amd64 --build-arg REACT_APP_BACKEND_URL=${PROD_URL} -t st333phanie/react-flask-note-app-frontend:latest -f frontend/Dockerfile frontend"
+            }
         }
         stage('Push Images to Docker Hub') {
             steps {
