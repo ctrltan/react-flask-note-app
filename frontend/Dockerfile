@@ -1,6 +1,6 @@
 FROM --platform=linux/amd64 node:22-alpine as build
-ARG REACT_APP_BASE_URL
-ENV REACT_APP_BASE_URL=${REACT_APP_BASE_URL}
+ARG REACT_APP_BACKEND_URL
+ENV REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL}
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm ci
