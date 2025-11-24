@@ -9,6 +9,7 @@ pipeline {
         AES_ENCRYPTION_KEY = credentials('AES_ENCRYPTION_KEY')
         AES_INITIALISATION_VECTOR = credentials('AES_INITIALISATION_VECTOR')
         JWT_SECRET_KEY = credentials('JWT_SECRET_KEY')
+        PROD_URL = 'https://note-together-api.onrender.com'
         PATH = "/usr/local/bin:${env.PATH}"
     }
     stages {
@@ -24,7 +25,7 @@ pipeline {
                 sh 'docker buildx build --platform linux/amd64 -t st333phanie/react-flask-note-app-backend:latest -f backend/Dockerfile backend'
 
                 sh 'echo "Building frontend image..."'
-                sh 'docker buildx build --platform linux/amd64 -t st333phanie/react-flask-note-app-frontend:latest -f frontend/Dockerfile frontend'
+                sh "docker buildx build --platform linux/amd64 --build-arg REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL} -t st333phanie/react-flask-note-app-frontend:latest -f frontend/Dockerfile frontend"
             }
         }
         stage('Run Tests') {
@@ -44,6 +45,10 @@ pipeline {
                     }
                 }
             }
+        }
+        stage('Rebuild Frontend with Production URL') {
+            sh 'echo "Building frontend image..."'
+            sh "docker buildx build --platform linux/amd64 --build-arg REACT_APP_BACKEND_URL=${PROD_URL} -t st333phanie/react-flask-note-app-frontend:latest -f frontend/Dockerfile frontend"
         }
         stage('Push Images to Docker Hub') {
             steps {
