@@ -73,7 +73,7 @@ def login(cur=None):
     password = req_data['password']
 
     try:
-        cur.execute('''SELECT * FROM users WHERE username=%s''', (username,))
+        cur.execute('''SELECT * FROM users WHERE username=%s;''', (username,))
 
         user = cur.fetchone()
         user_password = user[3] if user != None else None
