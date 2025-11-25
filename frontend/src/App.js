@@ -5,6 +5,7 @@ import { createContext, useContext, useState } from 'react';
 import HomePage from './pages/HomePage.js';
 import LoginPage from './pages/LoginPage.js';
 import SignupPage from './pages/SignupPage.js';
+import NotesPage from './pages/NotesPage.js';
 import usePersistedState from './components/hooks/persistentState.js';
 import ProtectedRoute from './components/wrappers/ProtectedRoute.js';
 
@@ -21,7 +22,7 @@ function App() {
           <Route path='/' element={<HomePage />} />
           <Route path='/login' element={<LoginPage />}/>
           <Route element={<ProtectedRoute />}>
-            <Route path='/notes'/>
+            <Route path='/notes' element={<NotesPage />}/>
           </Route>
         </Routes>
       </div>

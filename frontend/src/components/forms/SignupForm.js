@@ -152,7 +152,7 @@ export default function SignupForm() {
         
             setUser({ userId: user_id, username: username });
 
-            nav('/');
+            nav('/notes');
         } catch (e) {
             console.log(e);
         };

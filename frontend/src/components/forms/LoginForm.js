@@ -99,12 +99,12 @@ export default function LoginForm() {
                 
                 setUser({ userId: user_id, username: username });
 
-                nav('/');
+                nav('/notes');
             } catch (e) {
                 console.log(e);
             };
         } else {
-            nav('/');
+            nav('/notes');
         }
     }
 

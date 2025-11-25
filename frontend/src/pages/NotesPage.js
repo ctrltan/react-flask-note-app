@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../App";
 import axios from "axios";
+import { protectedClient } from "../components/wrappers/ProtectedRoute";
+import LogoutButton from "../components/buttons/LogoutButton";
 
 
 export default function NotesPage() {
@@ -10,19 +12,22 @@ export default function NotesPage() {
 
     //retrieve all user notes from the database and display them
     
-    useEffect(async () => {
-        try {
-            res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/notes`, null, { withCredentials: true });
-            
-            if (typeof res.data.message === 'string') {
-                setMessage(res.data.message);
-                return;
-            }
+    useEffect(() => {
+        const retrieveNotes = async () => {
+            try {
+                const res = await protectedClient.get(`${process.env.REACT_APP_BACKEND_URL}/notes`, null, { withCredentials: true });
+                console.log(res.data.message);
+                if (typeof res.data.message === 'string') {
+                    setMessage(res.data.message);
+                    return;
+                }
 
-            setNotes(res.data.message);
-        } catch(e) {
-            console.log(e)
+                setNotes(res.data.message);
+            } catch(e) {
+                console.log(e)
+            }
         }
+        retrieveNotes();
     }, [])
 
     /*components: 
@@ -30,6 +35,13 @@ export default function NotesPage() {
         - note block component to view notes -> clickable notes
         - search bar for notes
     */
-
+    
+    return (
+        <div>
+            
+            <p>{message}</p>
+            <LogoutButton />
+        </div>
+    )
 
 }

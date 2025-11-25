@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import Diversity3RoundedIcon from '@mui/icons-material/Diversity3Rounded';
 import NotesRoundedIcon from '@mui/icons-material/NotesRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
+import { useNavigate } from 'react-router-dom';
 
 const theme = createTheme({
     palette: {
@@ -46,6 +47,7 @@ const HomeContent = () => {
 export default function HomePage() {
     const [apiData, setApiData] = useState('');
     const {user, setUser} = useContext(UserContext);
+    const nav = useNavigate()
 
     useEffect(() => {
         const getData = async () => {
@@ -54,7 +56,11 @@ export default function HomePage() {
             setApiData(response.data.message);
         }
 
-        getData();
+        if (user === null) {
+            getData();
+        } else {
+            nav('/notes');
+        }
     }, []);
 
     return (
