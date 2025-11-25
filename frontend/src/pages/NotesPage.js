@@ -3,14 +3,26 @@ import { UserContext } from "../App";
 import axios from "axios";
 import { protectedClient } from "../components/wrappers/ProtectedRoute";
 import LogoutButton from "../components/buttons/LogoutButton";
+import Toolbar from "@mui/material/Toolbar";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItem from "@mui/material/ListItem";
+import List from "@mui/material/List";
+import Divider from "@mui/material/Divider";
+import Drawer from "@mui/material/Drawer";
+import CssBaseline from "@mui/material/CssBaseline";
+import AppBar from "@mui/material/AppBar";
+import Typography from "@mui/material/Typography";
+
+
+const drawerWidth = 240;
+
 
 
 export default function NotesPage() {
     const [notes, setNotes] = useState(null);
     const [message, setMessage] = useState('');
     const {user, setUser} = useContext(UserContext);
-
-    //retrieve all user notes from the database and display them
     
     useEffect(() => {
         const retrieveNotes = async () => {
@@ -22,7 +34,9 @@ export default function NotesPage() {
                     return;
                 }
 
-                setNotes(res.data.message);
+                if (Object.keys(notes).length > 0) {
+                    setNotes(res.data.message);
+                }
             } catch(e) {
                 console.log(e)
             }
@@ -38,9 +52,45 @@ export default function NotesPage() {
     
     return (
         <div>
-            
+            <p>{notes ? notes : null}</p>
             <p>{message}</p>
-            <LogoutButton />
+            <CssBaseline />
+            <Drawer
+                sx={{
+                width: drawerWidth,
+                flexShrink: 0,
+                '& .MuiDrawer-paper': {
+                    width: drawerWidth,
+                    boxSizing: 'border-box',
+                },
+                }}
+                variant="permanent"
+                anchor="left"
+            >
+                <Toolbar>
+                    <Typography>NoteTogether</Typography>
+                </Toolbar>
+                <Divider />
+                <List>
+                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+                    <ListItem key={text} disablePadding>
+                    <ListItemButton>
+                        <ListItemText primary={text} />
+                    </ListItemButton>
+                    </ListItem>
+                ))}
+                {['All mail', 'Trash', 'Spam'].map((text, index) => (
+                    <ListItem key={text} disablePadding>
+                    <ListItemButton>
+                        <ListItemText primary={text} />
+                    </ListItemButton>
+                    </ListItem>
+                ))}
+                <ListItemButton>
+                    <LogoutButton />
+                </ListItemButton>
+                </List>
+            </Drawer>
         </div>
     )
 
