@@ -40,7 +40,7 @@ def get_all_notes(cur=None):
 
         return response, 200
     except Exception as ex:
-        print(ex)
+        print(ex, flush=True)
         return {'message': "Sorry! We couldn't get your notes at this time. Try this page later"}
 
 @notes.route('/notes/new_note', methods=['POST'])
