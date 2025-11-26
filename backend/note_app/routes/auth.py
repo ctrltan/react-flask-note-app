@@ -52,8 +52,8 @@ def signup(cur=None):
 
             response = make_response(jsonify({'message': { 'user_id': user_id, 'username': username }}))
 
-            response.set_cookie('access_token', access_token, max_age=timedelta(minutes=15), httponly=True, samesite=None, secure=True)
-            response.set_cookie('refresh_token', refresh_token, max_age=timedelta(days=30), httponly=True, samesite=None, secure=True)
+            response.set_cookie('access_token', access_token, max_age=timedelta(minutes=15), httponly=True, samesite='None', secure=True, path='/')
+            response.set_cookie('refresh_token', refresh_token, max_age=timedelta(days=30), httponly=True, samesite='None', secure=True, path='/')
 
             return response, 200
         except Exception as e:
@@ -95,8 +95,8 @@ def login(cur=None):
 
         response = make_response(jsonify({'message': { 'user_id': user_id, 'username': username }}))
 
-        response.set_cookie('access_token', access_token, max_age=timedelta(minutes=15), httponly=True, samesite='None', secure=True)
-        response.set_cookie('refresh_token', refresh_token, max_age=timedelta(days=30), httponly=True, samesite='None', secure=True)
+        response.set_cookie('access_token', access_token, max_age=timedelta(minutes=15), httponly=True, samesite='None', secure=True, path='/')
+        response.set_cookie('refresh_token', refresh_token, max_age=timedelta(days=30), httponly=True, samesite='None', secure=True, path='/')
 
         return response, 200
 
@@ -145,7 +145,7 @@ def refresh():
         refresh, access_token = token_creator({ 'user_id': user_id, 'session_id': session_id, 'username': username })
 
         response = make_response()
-        response.set_cookie('access_token', access_token)
+        response.set_cookie('access_token', access_token, max_age=timedelta(minutes=15), httponly=True, samesite='None', secure=True, path='/')
 
         return response, 200
     except Exception as ex:

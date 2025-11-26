@@ -40,9 +40,9 @@ export default function NotesPage() {
     
     return (
         <div>
+            <SideBar />
             <p>{notes ? notes : null}</p>
             <p>{message}</p>
-            <SideBar />
         </div>
     )
 
