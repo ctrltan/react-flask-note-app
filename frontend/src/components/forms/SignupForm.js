@@ -147,6 +147,7 @@ export default function SignupForm() {
                 setMessage(res.data.message);
                 return;
             };
+            setMessage('');
 
             const {user_id, x} = res.data.message
         
