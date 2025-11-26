@@ -2,6 +2,12 @@ import { useContext } from "react";
 import { UserContext } from "../../App";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Button from "@mui/material/Button";
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+import { createTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@emotion/react";
 
 
 export default function LogoutButton() {
@@ -25,7 +31,12 @@ export default function LogoutButton() {
 
     return (
         <div>
-            <button onClick={postLogout}>Logout</button>
+            <Button onClick={postLogout} variant="text" size="medium">
+                <Stack direction='row' sx={{ gap: 1 }}>
+                    Logout
+                    <LogoutRoundedIcon/>
+                </Stack>
+            </Button>
         </div>
     );
 }

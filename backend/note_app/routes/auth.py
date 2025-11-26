@@ -73,7 +73,7 @@ def login(cur=None):
     password = req_data['password']
 
     try:
-        cur.execute('''SELECT * FROM users WHERE username=%s''', (username,))
+        cur.execute('''SELECT * FROM users WHERE username=%s;''', (username,))
 
         user = cur.fetchone()
         user_password = user[3] if user != None else None
@@ -142,7 +142,7 @@ def refresh():
         if not valid_session:
             raise Exception('Session ended')
 
-        access_token, x = token_creator({ 'user_id': user_id, 'session_id': session_id, 'username': username })
+        refresh, access_token = token_creator({ 'user_id': user_id, 'session_id': session_id, 'username': username })
 
         response = make_response()
         response.set_cookie('access_token', access_token)
