@@ -113,8 +113,8 @@ def logout():
         remove_session(token_payload['session_id'])
 
         response = make_response()
-        response.delete_cookie('access_token')
-        response.delete_cookie('refresh_token')
+        response.delete_cookie('access_token', samesite='None', secure=True, path='/')
+        response.delete_cookie('refresh_token', samesite='None', secure=True, path='/')
 
         return response, 200
     except Exception as ex:

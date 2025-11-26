@@ -16,12 +16,15 @@ export default function NotesPage() {
             try {
                 const res = await protectedClient.get(`${process.env.REACT_APP_BACKEND_URL}/notes`, null, { withCredentials: true });
                 console.log(res.data.message);
+
                 if (typeof res.data.message === 'string') {
                     setMessage(res.data.message);
                     return;
                 }
 
-                if (Object.keys(notes).length > 0) {
+                setMessage('');
+
+                if (Object.keys(res.data.message).length > 0) {
                     setNotes(res.data.message);
                 }
             } catch(e) {
