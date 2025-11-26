@@ -11,6 +11,7 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import MuiCard from '@mui/material/Card';
 import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
 
 const LoginContainer = styled(Stack)(({ theme }) => ({
   height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
@@ -154,6 +155,10 @@ export default function LoginForm() {
                         >
                         Login
                         </Button>
+                        <Typography sx={{ textAlign: 'center' }}>
+                        Haven't got an account?{' '}
+                        <Link href='/' sx={{ alignSelf: 'center' }}>Sign up</Link>
+                    </Typography>
                     </Box>
                 </Card>
             </LoginContainer>
