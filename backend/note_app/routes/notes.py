@@ -16,12 +16,6 @@ def check_tokens():
 @notes.route('/notes', methods=['GET'])
 @db_connector()
 def get_all_notes(cur=None):
-    '''
-    1. Retrieve user_id from access token payload
-    2. Query database for user notes in the note_owners table and retrieve the notes associated
-    3. return a json of all the notes
-    '''
-
     access_token = request.cookies.get('access_token')
     payload = token_decoder(access_token)
 
@@ -43,10 +37,18 @@ def get_all_notes(cur=None):
         print(ex, flush=True)
         return {'message': "Sorry! We couldn't get your notes at this time. Try this page later"}
 
-@notes.route('/notes/new_note', methods=['POST'])
+@notes.route('/notes/save', methods=['POST'])
 @db_connector()
-def add_note():
-    pass
+def save_note(cur=None):
+    access_token = request.cookies.get('access_token')
+    payload = token_decoder(access_token)
+
+    user_id = payload['user_id']
+
+    try:
+        pass
+    except:
+        pass
 
 @notes.route('/notes/<int:note_id>', methods=['GET', 'POST'])
 @db_connector()

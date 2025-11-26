@@ -9,10 +9,16 @@ import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
 import AppBar from "@mui/material/AppBar";
 import Typography from "@mui/material/Typography";
+import { useContext } from "react";
+import { UserContext } from "../../App";
 
 const drawerWidth = 240;
 
+
+
 export default function SideBar() {
+    const {user, setUser} = useContext(UserContext);
+
     return (
         <div>
             <CssBaseline />
@@ -29,11 +35,11 @@ export default function SideBar() {
                 anchor="left"
             >
                 <Toolbar>
-                    <Typography>NoteTogether</Typography>
+                    <Typography sx={{ fontWeight: 800 }}>NoteTogether</Typography>
                 </Toolbar>
-                <Divider />
+                
                 <List>
-                {[].map((text, index) => (
+                {['All Notes', 'Your Notes', 'Shared Notes'].map((text, index) => (
                     <ListItem key={text} disablePadding>
                     <ListItemButton>
                         <ListItemText primary={text} />

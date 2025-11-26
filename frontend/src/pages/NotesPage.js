@@ -3,7 +3,14 @@ import { UserContext } from "../App";
 import axios from "axios";
 import { protectedClient } from "../components/wrappers/ProtectedRoute";
 import SideBar from "../components/elements/SideBar";
-
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import NoteCard from "../components/elements/NoteCard";
+import Button from "@mui/material/Button";
+import AppBar from "@mui/material/AppBar";
+import Stack from "@mui/material/Stack";
+import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
+import AddNoteButton from "../components/buttons/AddNoteButton";
 
 
 export default function NotesPage() {
@@ -43,9 +50,24 @@ export default function NotesPage() {
     
     return (
         <div>
-            <SideBar />
-            <p>{notes ? notes : null}</p>
-            <p>{message}</p>
+            <Box sx={{ display: 'flex' }}>
+                <SideBar />
+                <Box component='main' sx={{ p: 3, flexGrow: 1 }}>
+                    <Stack direction='row' sx={{ width: '100%' }}>
+                        <Typography variant="h6" sx={{ fontWeight: 500, flexGrow: 1 }}>
+                            {user.username}'s Note Space
+                        </Typography>
+                        <AddNoteButton/>
+                    </Stack>
+                    {notes ?
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+                            {notes.map((note) => 
+                                <NoteCard noteData={note}/>
+                            )}
+                        </Box>
+                    : <p>{message}</p>}
+                </Box>
+            </Box>
         </div>
     )
 
