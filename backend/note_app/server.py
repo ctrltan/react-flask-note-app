@@ -10,7 +10,7 @@ import logging
 app = Flask(__name__)
 CORS(app, supports_credentials=True, origins=os.getenv('FLASK_APP_CLIENT_URL') or '*')
 
-logging.basicConfig(level=logging.DEBUG, handlers=logging.StreamHandler())
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 load_dotenv('.env')
 

@@ -2,7 +2,6 @@ from flask import Blueprint, request, make_response, jsonify
 from note_app.helpers.decorators import db_connector
 from note_app.helpers.auth_functions import token_decoder
 from datetime import datetime, timezone
-import pytz
 import logging
 
 notes = Blueprint('notes', __name__)
