@@ -5,10 +5,13 @@ from note_app.helpers.decorators import db_connector
 from note_app.helpers.auth_functions import email_encryption, token_creator, create_session, token_decoder, remove_session, is_valid_session
 from note_app.server import bcrypt
 from uuid import uuid4
+import logging
 import ulid
 import re
 
 auth = Blueprint('auth', __name__)
+
+authLogger = logging.getLogger('auth')
 
 PASSWORD_PATTERN = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
 
@@ -56,8 +59,8 @@ def signup(cur=None):
             response.set_cookie('refresh_token', refresh_token, max_age=timedelta(days=30), httponly=True, samesite='None', secure=True, path='/')
 
             return response, 200
-        except Exception as e:
-            print(e)
+        except Exception as ex:
+            authLogger.exception(ex)
             raise Exception('Could not create this account. Try again later')
 
     except Exception as ex:
@@ -101,6 +104,7 @@ def login(cur=None):
         return response, 200
 
     except Exception as ex:
+        authLogger.exception(ex)
         return { 'message': ex.args[0] }
     
 
@@ -118,7 +122,7 @@ def logout():
 
         return response, 200
     except Exception as ex:
-        print(ex)
+        authLogger.exception(ex)
         return { 'message': 'Could not log you out at this time' }
     
 
@@ -149,5 +153,6 @@ def refresh():
 
         return response, 200
     except Exception as ex:
+        authLogger.exception(ex)
         return { 'message': ex.args[0] }, 401
     

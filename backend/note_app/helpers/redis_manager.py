@@ -3,7 +3,9 @@ from redis.cache import CacheConfig
 from collections import deque
 from datetime import datetime, timedelta
 from note_app.helpers.helper_utils import REDIS_USER, REDIS_PASSWORD, REDIS_PORT
+import logging
 
+redisLogger = logging.getLogger('redis manager')
 
 class RedisManager:
 
@@ -24,7 +26,7 @@ class RedisManager:
             })
             self.r.expire(f'session_id:{session_id}', time=timedelta(days=30))
         except Exception as ex:
-            print(ex)
+            redisLogger.exception(ex)
     
     def get_session(self, session_id: str) -> dict | None:
         try:
@@ -34,7 +36,7 @@ class RedisManager:
         
             return self.r.hkeys(f'session_id:{session_id}')
         except Exception as ex:
-            print(ex)
+            redisLogger.exception(ex)
             return None
     
     def valid_session(self, session_id: str) -> bool:
@@ -45,7 +47,7 @@ class RedisManager:
             
             return True
         except Exception as ex:
-            print(ex)
+            redisLogger.exception(ex)
             return False
 
 
@@ -54,5 +56,5 @@ class RedisManager:
             self.r.expire(f'session_id:{session_id}', -1)
             return True
         except Exception as ex:
-            print(ex)
+            redisLogger.exception(ex)
             return False
