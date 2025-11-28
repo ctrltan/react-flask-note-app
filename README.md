@@ -6,18 +6,19 @@ This is NoteTogether! A note-taking app with collaborative note-taking capabilit
 
 ## Infrastructure
 
-### Frontend
-![JavaScript](https://shields.io/badge/JavaScript-F7DF1E?logo=JavaScript&logoColor=000&style=flat-square)
-![React](https://img.shields.io/badge/-ReactJs-61DAFB?logo=react&logoColor=white&style=flat-square)
-![Jest](https://img.shields.io/badge/Jest-323330?style=flat-square&logo=Jest&logoColor=white)
-
 ### Backend
 ![Python](https://img.shields.io/badge/python-3670A0?style=flat-square&logo=python&logoColor=ffdd54)
 ![Flask](https://img.shields.io/badge/Flask-000000?style=flat-square&logo=Flask&logoColor=white)
 ![Pytest](https://img.shields.io/badge/Pytest-green?logo=pytest&style=flat-square)
 
+### Frontend
+![JavaScript](https://shields.io/badge/JavaScript-F7DF1E?logo=JavaScript&logoColor=000&style=flat-square)
+![React](https://img.shields.io/badge/-ReactJs-61DAFB?logo=react&logoColor=white&style=flat-square)
+<!--- ![Jest](https://img.shields.io/badge/Jest-323330?style=flat-square&logo=Jest&logoColor=white) --->
+
 ### Database
 ![PostgreSQL](https://img.shields.io/badge/postgresql-4169e1?style=flat-square&logo=postgresql&logoColor=white)
+![Supabase](https://shields.io/badge/supabase-black?logo=supabase&style=flat-square)
 ![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white)
 
 ### CI/CD
@@ -68,4 +69,8 @@ My approach to this problem is to generate short-lived access and long-lived ref
 
 The current approach for the app is for users to manually save notes after edits, writing over the existing note content in the PostgreSQL database. Whilst this approach is simple and fast to implement, it could negatively affect the application's performance and consequentially, user experience, as the user base increases. For example, frequent and concurrent note edits from multiple users at once increases database load. In the case of database connection failure, large edits could be lost. 
 
-Users should have up to date notes and be able to continue editing even if a save fails or they go offline. 
+Users should have up to date notes and be able to continue editing even if a save fails or they go offline. There should also be a fault-tolerance process that ensures user note data won't be lost or unretrievable in the event of a database connection failure.
+
+My approach to this problem is to in the event the client loses conneciton the server, notes that are currently being edited are stored in the client's `local storage`. When the client polls the server, looking to send the note data, if it is back online then the note will be saved to Redis under the `note-id`. This process will be triggered whenever the user stops typing, as opposed to periodically polling the server even when changes have not been made. When the user hits 'save' or leaves the page, the note in Redis will be saved to the PostgreSQL database. If the note saves, it will stay in Redis for a set TTL, available for fast access if the user requests it again. If the note save fails, a server function will queue the `note_id` and periodically check the database for an available connection and save the note when available:
+- Reduces load on primary, PostgreSQL database by relying on secondary data stores to manage frequent access and editing which provides a faster user experience
+- Improves fault-tolerance of note-saving across client and server
