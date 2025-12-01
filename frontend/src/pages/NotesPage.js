@@ -22,7 +22,6 @@ export default function NotesPage() {
         const retrieveNotes = async () => {
             try {
                 const res = await protectedClient.get(`${process.env.REACT_APP_BACKEND_URL}/notes`, null, { withCredentials: true });
-                console.log(res.data.message);
 
                 if (typeof res.data.message === 'string') {
                     setMessage(res.data.message);
@@ -40,13 +39,6 @@ export default function NotesPage() {
         }
         retrieveNotes();
     }, [])
-
-    /*components: 
-        - side navbar with user
-        - note block component to view notes -> clickable notes
-        - search bar for notes
-        - add note button
-    */
     
     return (
         <div>
@@ -61,8 +53,8 @@ export default function NotesPage() {
                     </Stack>
                     {notes ?
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                            {notes.map((note) => 
-                                <NoteCard noteData={note}/>
+                            {Object.entries(notes).map(([id, note]) => 
+                                <NoteCard noteData={note} noteId={id}/>
                             )}
                         </Box>
                     : <p>{message}</p>}

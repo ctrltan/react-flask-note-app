@@ -32,6 +32,7 @@ def get_all_notes(cur=None):
         notes = {}
         for note in raw_notes:
             note_id = note[0]
+            print(note[1])
             notes[note_id] = {'title': note[1], 'contents': note[2], 'last_accessed': datetime.isoformat(note[3]), 'created_by': note[4], 'shared': note[5]}
         
         response = make_response(jsonify({'message': notes}))
@@ -41,24 +42,53 @@ def get_all_notes(cur=None):
         noteLogger.exception(ex)
         return {'message': "Sorry! We couldn't get your notes at this time. Try this page later"}
 
-@notes.route('/notes/new_note', methods=['GET'])
+@notes.route('/notes/new-note', methods=['GET'])
 @db_connector()
 def create_new_note(cur=None):
     access_token = request.cookies.get('access_token')
     payload = token_decoder(access_token)
 
+    user_id = payload['user_id']
     username = payload['username']
 
     try:
         last_accessed = datetime.now(timezone.utc)
         created_by = username
+        title = 'Untitled'
 
-        cur.execute('''INSERT INTO notes (last_accessed, created_by) VALUES (%s, %s) RETURNING *;''', (last_accessed, created_by))
-        raw_note = cur.fetchone()[0]
+        cur.execute('''INSERT INTO notes (title, last_accessed, created_by) VALUES (%s, %s, %s) RETURNING note_id;''', (title, last_accessed, created_by))
+        raw_note = cur.fetchone()
 
         note_id = raw_note[0]
-        title = 'New Note'
-        contents = None
+
+        cur.execute('''INSERT INTO note_owners (user_id, note_id) VALUES (%s, %s);''', (user_id, note_id))
+
+        note_data = {'note_id': note_id, 'title': title}
+
+        response = make_response(jsonify({'message': note_data}))
+
+        return response, 200
+    except Exception as ex:
+        noteLogger.exception(ex)
+        return {'message': "Sorry! We couldn't create your note at this moment. Try again later"}
+
+@notes.route('/notes/get-note', methods=['GET', 'POST'])
+@db_connector()
+def get_note(cur=None):
+    access_token = request.cookies.get('access_token')
+    payload = token_decoder(access_token)
+
+    user_id = payload['user_id']
+    note_id = request.args.get('note_id', type=int)
+    
+    try:
+        cur.execute('''SELECT note_id, title, contents, created_by FROM notes WHERE note_id=%s and note_id IN (SELECT note_id FROM note_owners WHERE user_id=%s);''', (note_id, user_id))
+        raw_note = cur.fetchone()
+
+        note_id = raw_note[0]
+        title = raw_note[1]
+        contents = raw_note[2]
+        created_by = raw_note[3]
 
         note_data = {'note_id': note_id, 'title': title, 'contents': contents, 'created_by': created_by}
 
@@ -67,7 +97,7 @@ def create_new_note(cur=None):
         return response, 200
     except Exception as ex:
         noteLogger.exception(ex)
-        return {'message': "Sorry! We couldn't create your note at this moment. Try again later"}
+        return {'message': "Sorry! We couldn't get that note"}
 
 @notes.route('/notes/save', methods=['POST'])
 @db_connector()
@@ -98,14 +128,8 @@ def save_note(cur=None):
     except Exception as ex:
         noteLogger.exception(ex)
         return {'message': "your note could not be saved"}, 500
-        
-
-@notes.route('/notes/<int:note_id>', methods=['GET', 'POST'])
-@db_connector()
-def get_note(id):
-    pass
     
-@notes.route('/notes/delete/<int:note_id>', methods=['DELETE'])
+@notes.route('/notes/delete', methods=['DELETE'])
 @db_connector()
-def delete_note(id):
+def delete_note(cur=None):
     pass

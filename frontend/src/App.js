@@ -8,6 +8,7 @@ import SignupPage from './pages/SignupPage.js';
 import NotesPage from './pages/NotesPage.js';
 import usePersistedState from './components/hooks/persistentState.js';
 import ProtectedRoute from './components/wrappers/ProtectedRoute.js';
+import EditNotePage from './pages/EditNotePage.js';
 
 export const UserContext = createContext();
 
@@ -23,7 +24,7 @@ function App() {
           <Route path='/login' element={<LoginPage />}/>
           <Route element={<ProtectedRoute />}>
             <Route path='/notes' element={<NotesPage />}/>
-            <Route path='/notes/new-note'/>
+            <Route path='/notes/:id/:slugTitle' element={<EditNotePage />}/>
           </Route>
         </Routes>
       </div>

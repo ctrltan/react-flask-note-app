@@ -1,20 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import Stack from "@mui/material/Stack";
 import { protectedClient } from "../wrappers/ProtectedRoute";
 import { useNavigate } from "react-router-dom";
+import slugifyTitle from "../hooks/slugifyTitle";
 
 
 export default function AddNoteButton() {
     const nav = useNavigate();
+    const [message, setMessage] = useState('');
 
     const addNote = async () => {
-        /*
-        Get the new note data and navigate to edit that note specifically
-        Create a hook that takes note id and retrieves the note then allows editing so editing logic is not repeated
-        */
-        nav('/notes/new-note');
+        try {
+            const res = await protectedClient.get(`${process.env.REACT_APP_BACKEND_URL}/notes/new-note`, null, { withCredentials: true });
+            console.log(res.data.message);
+
+            if (typeof res.data.message === 'string') {
+                setMessage(res.data.message);
+                return;
+            }
+            
+            setMessage('');
+
+            const {note_id, title} = res.data.message;
+            const slugTitle = slugifyTitle(title);
+
+            nav(`/notes/${note_id}/${slugTitle}`);
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     return (
