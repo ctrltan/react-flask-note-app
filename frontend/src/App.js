@@ -23,6 +23,7 @@ function App() {
           <Route path='/login' element={<LoginPage />}/>
           <Route element={<ProtectedRoute />}>
             <Route path='/notes' element={<NotesPage />}/>
+            <Route path='/notes/new-note'/>
           </Route>
         </Routes>
       </div>

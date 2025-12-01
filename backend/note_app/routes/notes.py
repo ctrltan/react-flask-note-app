@@ -2,6 +2,7 @@ from flask import Blueprint, request, make_response, jsonify
 from note_app.helpers.decorators import db_connector
 from note_app.helpers.auth_functions import token_decoder
 from datetime import datetime, timezone
+from psycopg2.errors import OperationalError
 import logging
 
 notes = Blueprint('notes', __name__)
@@ -31,7 +32,7 @@ def get_all_notes(cur=None):
         notes = {}
         for note in raw_notes:
             note_id = note[0]
-            notes[note_id] = {'title': note[1], 'contents': note[2], 'last_accessed': note[3].isoformat(), 'created_by': note[4], 'shared': note[5]}
+            notes[note_id] = {'title': note[1], 'contents': note[2], 'last_accessed': datetime.isoformat(note[3]), 'created_by': note[4], 'shared': note[5]}
         
         response = make_response(jsonify({'message': notes}))
 
@@ -56,7 +57,7 @@ def create_new_note(cur=None):
         raw_note = cur.fetchone()[0]
 
         note_id = raw_note[0]
-        title = f'Note #{note_id}'
+        title = 'New Note'
         contents = None
 
         note_data = {'note_id': note_id, 'title': title, 'contents': contents, 'created_by': created_by}
@@ -76,11 +77,28 @@ def save_note(cur=None):
 
     user_id = payload['user_id']
 
+    note_data = request.get_json()
+
     try:
-        pass
+        client_last_access = note_data['last_accessed']
+        last_accessed = datetime.fromisoformat(client_last_access)
+
+        cur.execute('''UPDATE notes SET title=%s, contents=%s, last_accessed=%s, shared=%s WHERE note_id=%s;''', (note_data['title'], note_data['contents'], last_accessed, note_data['shared'], note_data['note_id']))
+
+        '''
+        put database in try except block which does retry if no success then do the retry
+        if user tries to exit page without retry then prompt save
+        '''
+    except OperationalError as ex:
+        noteLogger.exception(ex)
+        '''
+        Trigger retry by pushing the note_id to the redis queue under the user's id (should be managed across sessions for one user)
+        '''
+        return 
     except Exception as ex:
         noteLogger.exception(ex)
-        pass
+        return {'message': "your note could not be saved"}, 500
+        
 
 @notes.route('/notes/<int:note_id>', methods=['GET', 'POST'])
 @db_connector()
