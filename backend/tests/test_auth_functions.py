@@ -74,6 +74,8 @@ def test_decoder_empty_token(client):
 
 def test_create_session_success(mocker):
     mock_redis_manager = MagicMock()
+    mock_redis_client = MagicMock()
+    mocker.patch('note_app.helpers.redis_manager.start_redis_pool', return_value=mock_redis_client)
     mocker.patch('note_app.helpers.auth_functions.RedisManager', return_value=mock_redis_manager)
     mock_redis_manager.add_session_key.side_effect = None
 
@@ -85,6 +87,8 @@ def test_create_session_success(mocker):
 
 def test_create_session_failure(mocker):
     mock_redis_manager = MagicMock()
+    mock_redis_client = MagicMock()
+    mocker.patch('note_app.helpers.redis_manager.start_redis_pool', return_value=mock_redis_client)
     mocker.patch('note_app.helpers.auth_functions.RedisManager', return_value=mock_redis_manager)
     mock_redis_manager.add_session_key.side_effect = Exception
 
@@ -96,6 +100,8 @@ def test_create_session_failure(mocker):
 
 def test_remove_session_success(mocker):
     mock_redis_manager = MagicMock()
+    mock_redis_client = MagicMock()
+    mocker.patch('note_app.helpers.redis_manager.start_redis_pool', return_value=mock_redis_client)
     mocker.patch('note_app.helpers.auth_functions.RedisManager', return_value=mock_redis_manager)
     mock_redis_manager.valid_session.return_value = True
     mock_redis_manager.delete_session.return_value = True
@@ -106,6 +112,8 @@ def test_remove_session_success(mocker):
 
 def test_remove_session_success_if_session_nonexistent(mocker):
     mock_redis_manager = MagicMock()
+    mock_redis_client = MagicMock()
+    mocker.patch('note_app.helpers.redis_manager.start_redis_pool', return_value=mock_redis_client)
     mocker.patch('note_app.helpers.auth_functions.RedisManager', return_value=mock_redis_manager)
     mock_redis_manager.valid_session.return_value = False
     
@@ -115,6 +123,8 @@ def test_remove_session_success_if_session_nonexistent(mocker):
 
 def test_is_valid_session_success(mocker):
     mock_redis_manager = MagicMock()
+    mock_redis_client = MagicMock()
+    mocker.patch('note_app.helpers.redis_manager.start_redis_pool', return_value=mock_redis_client)
     mocker.patch('note_app.helpers.auth_functions.RedisManager', return_value=mock_redis_manager)
     mock_redis_manager.valid_session.return_value = True
 
@@ -124,6 +134,8 @@ def test_is_valid_session_success(mocker):
 
 def test_is_valid_session_failure(mocker):
     mock_redis_manager = MagicMock()
+    mock_redis_client = MagicMock()
+    mocker.patch('note_app.helpers.redis_manager.start_redis_pool', return_value=mock_redis_client)
     mocker.patch('note_app.helpers.auth_functions.RedisManager', return_value=mock_redis_manager)
     mock_redis_manager.valid_session.return_value = False
 

@@ -5,6 +5,8 @@ from note_app.server import bcrypt
 def test_signup_success(client, mocker):
     mock_cursor = MagicMock()
     mock_redis_manager = MagicMock()
+    mock_redis_client = MagicMock()
+    mocker.patch('note_app.helpers.redis_manager.start_redis_pool', return_value=mock_redis_client)
 
     mock_cursor.fetchone.return_value = (1, 'janedoe', 'Janepassword1!', 'janedoe@email.com')
     mock_cursor.fetchall.return_value = ()
@@ -21,6 +23,8 @@ def test_signup_success(client, mocker):
 def test_signup_account_exists(client, mocker):
     mock_cursor = MagicMock()
     mock_redis_manager = MagicMock()
+    mock_redis_client = MagicMock()
+    mocker.patch('note_app.helpers.redis_manager.start_redis_pool', return_value=mock_redis_client)
 
     mock_cursor.fetchone.return_value = (1, 'janedoe', 'Janepassword1!', 'janedoe@email.com')
     mock_cursor.fetchall.return_value = (1, 'janedoe', 'Janepassword1!', 'janedoe@email.com')
@@ -36,6 +40,8 @@ def test_signup_account_exists(client, mocker):
 def test_signup_password_invalid(client, mocker):
     mock_cursor = MagicMock()
     mock_redis_manager = MagicMock()
+    mock_redis_client = MagicMock()
+    mocker.patch('note_app.helpers.redis_manager.start_redis_pool', return_value=mock_redis_client)
 
     mock_cursor.fetchone.return_value = (1, 'janedoe', 'Janepassword1!', 'janedoe@email.com')
     mock_cursor.fetchall.return_value = ()
@@ -51,6 +57,8 @@ def test_signup_password_invalid(client, mocker):
 def test_signup_user_id_not_found(client, mocker):
     mock_cursor = MagicMock()
     mock_redis_manager = MagicMock()
+    mock_redis_client = MagicMock()
+    mocker.patch('note_app.helpers.redis_manager.start_redis_pool', return_value=mock_redis_client)
 
     mock_cursor.fetchone.return_value = ()
     mock_cursor.fetchall.return_value = ()
@@ -67,6 +75,8 @@ def test_signup_user_id_not_found(client, mocker):
 def test_login_success(client, mocker):
     mock_cursor = MagicMock()
     mock_redis_manager = MagicMock()
+    mock_redis_client = MagicMock()
+    mocker.patch('note_app.helpers.redis_manager.start_redis_pool', return_value=mock_redis_client)
     
     encrypted_password = bcrypt.generate_password_hash('Janepassword1!').decode('utf-8')
 
@@ -84,6 +94,8 @@ def test_login_success(client, mocker):
 def test_login_user_does_not_exist(client, mocker):
     mock_cursor = MagicMock()
     mock_redis_manager = MagicMock()
+    mock_redis_client = MagicMock()
+    mocker.patch('note_app.helpers.redis_manager.start_redis_pool', return_value=mock_redis_client)
     
     mock_cursor.fetchone.return_value = None
 
@@ -97,6 +109,8 @@ def test_login_user_does_not_exist(client, mocker):
 def test_login_password_does_not_match(client, mocker):
     mock_cursor = MagicMock()
     mock_redis_manager = MagicMock()
+    mock_redis_client = MagicMock()
+    mocker.patch('note_app.helpers.redis_manager.start_redis_pool', return_value=mock_redis_client)
     
     encrypted_password = bcrypt.generate_password_hash('Janepassword1!').decode('utf-8')
 
@@ -111,6 +125,8 @@ def test_login_password_does_not_match(client, mocker):
 
 def test_logout_success(client, mocker, cookies):
     mock_redis_manager = MagicMock()
+    mock_redis_client = MagicMock()
+    mocker.patch('note_app.helpers.redis_manager.start_redis_pool', return_value=mock_redis_client)
     mocker.patch('note_app.helpers.auth_functions.RedisManager', return_value=mock_redis_manager)
 
     client.set_cookie('access_token', cookies[0])
@@ -125,6 +141,8 @@ def test_logout_success(client, mocker, cookies):
 
 def test_refresh_success(client, mocker, cookies):
     mock_redis_manager = MagicMock()
+    mock_redis_client = MagicMock()
+    mocker.patch('note_app.helpers.redis_manager.start_redis_pool', return_value=mock_redis_client)
     mocker.patch('note_app.helpers.auth_functions.RedisManager', return_value=mock_redis_manager)
 
     client.set_cookie('refresh_token', cookies[1])
@@ -137,6 +155,8 @@ def test_refresh_success(client, mocker, cookies):
 
 def test_refresh_no_token_failure(client, mocker):
     mock_redis_manager = MagicMock()
+    mock_redis_client = MagicMock()
+    mocker.patch('note_app.helpers.redis_manager.start_redis_pool', return_value=mock_redis_client)
     mocker.patch('note_app.helpers.auth_functions.RedisManager', return_value=mock_redis_manager)
 
     client.delete_cookie('refresh_token')

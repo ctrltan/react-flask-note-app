@@ -7,15 +7,18 @@ import logging
 
 redisLogger = logging.getLogger('redis manager')
 
+def start_redis_pool():
+    return redis.ConnectionPool(
+                host=f'redis-{REDIS_PORT}.crce204.eu-west-2-3.ec2.redns.redis-cloud.com',
+                port=int(REDIS_PORT),
+                decode_responses=True,
+                username=REDIS_USER,
+                password=REDIS_PASSWORD,
+            )
+
 class RedisManager:
 
-    pool = redis.ConnectionPool(
-            host=f'redis-{REDIS_PORT}.crce204.eu-west-2-3.ec2.redns.redis-cloud.com',
-            port=int(REDIS_PORT),
-            decode_responses=True,
-            username=REDIS_USER,
-            password=REDIS_PASSWORD,
-            )
+    pool = start_redis_pool()
 
     def __init__(self):
         self.r = redis.Redis(connection_pool=RedisManager.pool)

@@ -192,10 +192,19 @@ def delete_note(cur=None):
     try:
         '''
         - check username matches the username of the created_by at note id
-
+            - if they do then delete the note and the delete will cascade
+            - delete it from the cache
         - if it doesn't then check the user owns the note
-            - if they do then
+            - if they do then delete the note owner row
         '''
+
+        cur.execute('''SELECT EXISTS(SELECT 1 FROM notes WHERE note_id=%s and username=%s);''', (note_id, username))
+        exists = cur.fetchone()[0]
+
+        if exists:
+            cur.execute('''DELETE FROM notes WHERE note_id=%s and username=%s;''', (note_id,))
+            
+
     except Exception as ex:
         noteLogger.exception(ex)
         return {'message': 'Could not delete this note'}, 500
