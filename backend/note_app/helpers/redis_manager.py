@@ -45,6 +45,14 @@ class RedisManager:
         except Exception as ex:
             redisLogger.exception(ex)
             return None
+    
+    def delete_hset(self, key: str) -> bool:
+        try:
+            self.r.expire(key, -1)
+            return True
+        except Exception as ex:
+            redisLogger.exception(ex)
+            return False
 
     def add_session_key(self, session_id: str, user_id: str, refresh_token: str):
         try:

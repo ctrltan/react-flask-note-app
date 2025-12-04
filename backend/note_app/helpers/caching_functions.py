@@ -39,3 +39,18 @@ def get_note_hset(note_id: int) -> dict | None:
     except Exception as ex:
         cachingLogger.exception(ex)
         return None
+    
+def delete_note_hset(note_id: int) -> bool:
+    try:
+        r_conn = RedisManager()
+        note_key = f'note_{note_id}'
+
+        success = r_conn.delete_hset(note_key)
+        if not success:
+            raise Exception('Note does not exist')
+        
+        return True
+    except Exception as ex:
+        cachingLogger.exception(ex)
+        return False
+

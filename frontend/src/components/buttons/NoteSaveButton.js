@@ -37,12 +37,12 @@ export default function NoteSaveButton({ noteId }) {
                     'shared': shared
                 }, { withCredentials: true });
 
-                saveTimer.current = setTimeout(() => setSaving('Saved'), 2000);
-                setTimeout(() => {setSaving('Save'); setBtnDisable(false)}, 1000);
+                saveTimer.current = setTimeout(() => setSaving('Saved'), 1000);
+                setTimeout(() => {setSaving('Save'); setBtnDisable(false)}, 2000);
             } catch (e) {
                 console.log(e);
-                saveTimer.current = setTimeout(() => setSaving('Offline'), 2000);
-                setTimeout(() => {setSaving('Save'); setBtnDisable(false)}, 1000);
+                saveTimer.current = setTimeout(() => setSaving('Offline'), 1000);
+                setTimeout(() => {setSaving('Save'); setBtnDisable(false)}, 2000);
             }
         }
 

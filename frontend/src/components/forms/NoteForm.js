@@ -85,7 +85,6 @@ export default function NoteForm({ noteData }) {
 
     useEffect(() => {
         const hideHandler = () => {
-            console.log('unloading...')
             hardSave();
             if (online) localStorage.removeItem(`note-${noteData.note_id}`);
         }

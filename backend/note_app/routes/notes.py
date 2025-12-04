@@ -1,7 +1,7 @@
 from flask import Blueprint, request, make_response, jsonify
 from note_app.helpers.decorators import db_connector
 from note_app.helpers.auth_functions import token_decoder
-from note_app.helpers.caching_functions import add_note_hset, get_note_hset
+from note_app.helpers.caching_functions import add_note_hset, get_note_hset, delete_note_hset
 from datetime import datetime, timezone
 from psycopg2.errors import OperationalError
 from collections import deque
@@ -191,11 +191,7 @@ def delete_note(cur=None):
 
     try:
         '''
-        - check username matches the username of the created_by at note id
-            - if they do then delete the note and the delete will cascade
-            - delete it from the cache
-        - if it doesn't then check the user owns the note
-            - if they do then delete the note owner row
+        delete from retry queue if in queue
         '''
 
         cur.execute('''SELECT EXISTS(SELECT 1 FROM notes WHERE note_id=%s and username=%s);''', (note_id, username))
@@ -203,8 +199,13 @@ def delete_note(cur=None):
 
         if exists:
             cur.execute('''DELETE FROM notes WHERE note_id=%s and username=%s;''', (note_id,))
-            
-
+            delete_note_hset(note_id)
+        else:
+            cur.execute('''DELETE FROM note_owners WHERE note_id=%s and user_id=%s;''', (note_id, user_id))
+        
+        response = make_response(jsonify({'message': 'Note deleted'}))
+        
+        response, 200
     except Exception as ex:
         noteLogger.exception(ex)
         return {'message': 'Could not delete this note'}, 500
