@@ -1,51 +1,149 @@
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
+import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import { useEffect, useState } from "react"
+import Typography from "@mui/material/Typography";
+import { useEffect, useRef, useState } from "react"
 import React from "react";
+import { protectedClient } from "../wrappers/ProtectedRoute";
+import NoteSaveButton from "../buttons/NoteSaveButton";
 
-const noteSubmit = () => {
-    console.log("Form works")
-}
 
 export default function NoteForm({ noteData }) {
-    const [title, setTitle] = useState(() => {
-        if (!noteData?.note_id) return '';
-        const noteId = noteData.note_id;
-        return JSON.parse(localStorage.getItem(`note-${noteId}`))?.title || '';
-    });
-    const [contents, setContents] = useState(() => {
-        if (!noteData?.note_id) return '';
-        const noteId = noteData.note_id;
-        return JSON.parse(localStorage.getItem(`note-${noteId}`))?.contents || '';
-    });
+    const [title, setTitle] = useState(JSON.parse(localStorage.getItem(`note-${noteData.note_id}`)).title);
+    const [contents, setContents] = useState(JSON.parse(localStorage.getItem(`note-${noteData.note_id}`)).contents);
+    const [message, setMessage] = useState('');
+    
+    const [online, setOnline] = useState(true);
+    const saveTimer = useRef(null);
+    const messageTimer = useRef(null);
 
     useEffect(() => {
-        console.log(noteData);
-        if (!noteData?.note_id) return;
-        const noteId = noteData.note_id;
-
         const updatedNote = {
+            'note_id': noteData.note_id,
             'title': title,
             'contents': contents,
-            'last_accessed': new Date().toISOString()
+            'last_accessed': new Date().toISOString(),
+            'shared': false
         }
-        localStorage.setItem(`note-${noteId}`, JSON.stringify(updatedNote));
+        localStorage.setItem(`note-${noteData.note_id}`, JSON.stringify(updatedNote));
+    }, [title, contents])
+
+    const autoSave = async () => {
+        const savedNote = JSON.parse(localStorage.getItem(`note-${noteData.note_id}`)) || {};
+        const { note_id, title, contents, last_accessed, shared } = savedNote;
+        
+
+        if (messageTimer.current) clearTimeout(messageTimer.current);
+        setMessage('Saving...');
+
+        try {
+            const res = await protectedClient.post(`${process.env.REACT_APP_BACKEND_URL}/notes/auto-save`, {
+                'note_id': note_id,
+                'title': title,
+                'contents': contents,
+                'last_accessed': last_accessed,
+                'shared': shared
+            }, { withCredentials: true });
+
+            setOnline(true);
+            messageTimer.current = setTimeout(() => setMessage('Saved'), 1000);
+            setTimeout(() => setMessage(''), 3000);
+        } catch (e) {
+            console.log(e);
+            setOnline(false);
+            messageTimer.current = setTimeout(() => setMessage('Offline'), 1000);
+            setTimeout(() => setMessage(''), 3000);
+        }
+    }
+
+    const hardSave = async () => {
+        const savedNote = JSON.parse(localStorage.getItem(`note-${noteData.note_id}`)) || {};
+        const { note_id, title, contents, last_accessed, shared } = savedNote;
+
+        try {
+            const res = await protectedClient.post(`${process.env.REACT_APP_BACKEND_URL}/notes/save`, {
+                'note_id': note_id,
+                'title': title,
+                'contents': contents,
+                'last_accessed': last_accessed,
+                'shared': shared
+            }, { withCredentials: true });
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    const idleSave = () => {
+        if (saveTimer.current) clearTimeout(saveTimer.current);
+        saveTimer.current = setTimeout(autoSave, 1000);
+    }
+
+    useEffect(() => {
+        const hideHandler = () => {
+            console.log('unloading...')
+            hardSave();
+            if (online) localStorage.removeItem(`note-${noteData.note_id}`);
+        }
+
+        const visibilityHandler = () => {
+            if (document.visibilityState === 'hidden') {
+                hardSave();
+            }
+        }
+
+        document.addEventListener('visibilitychange', visibilityHandler);
+        window.addEventListener('pagehide', hideHandler);
+        return () => {
+            document.removeEventListener('visibilitychange', visibilityHandler);
+            window.removeEventListener('pagehide', hideHandler);
+        }
     }, [])
 
     return (
         <React.Fragment>
-            <Box component='form' sx={{ display: 'flex', gap: 2 }}>
+            <Box component='form' sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
                 <FormControl>
                     <FormLabel>Title</FormLabel>
-                    <TextField
-                    fullWidth
-                    name="title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    />
+                    <Stack direction='row' sx={{ flexGrow: 1 }}>
+                        <TextField
+                        fullWidth
+                        name="title"
+                        value={title}
+                        onChange={(e) => {
+                            setTitle(e.target.value); 
+                            idleSave()
+                        }}
+                        />
+                        <Button>Add Friends</Button>
+                    </Stack>
                 </FormControl>
+                <Card sx={{ p: 2 }}>
+                    <CardContent>
+                        <TextField
+                        fullWidth
+                        multiline
+                        rows={20}
+                        name="contents"
+                        value={contents}
+                        onChange={(e) => {
+                            setContents(e.target.value);
+                            idleSave()
+                        }}
+                        />
+                    </CardContent>
+                    <Stack direction='row' sx={{ width: '100%' }}>
+                        <NoteSaveButton noteId={noteData.note_id}/>
+                        <Typography sx={{ flexGrow: 1 }}></Typography>
+                        <Typography>{message}</Typography>
+                        <Typography sx={{ flexGrow: 1 }}></Typography>
+                        <Button>Delete</Button>
+                    </Stack>
+                </Card>
             </Box>
         </React.Fragment>
     );

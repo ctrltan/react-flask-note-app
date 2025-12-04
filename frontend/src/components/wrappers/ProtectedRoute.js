@@ -21,19 +21,19 @@ export default function ProtectedRoute() {
 
     protectedClient.interceptors.response.use(response => {
         return response;
-    }, error => {
+    }, async error => {
         const request = error.config;
         if (error.response.status === 401 && !request._retry) {
             try {
-                request._true = true;
-                refreshRetry();
+                request._retry = true;
+                await refreshRetry();
                 return axios(request);
             } catch (e) {
                 nav('/logout');
             }
         }
 
-        Promise.reject(error);
+        return Promise.reject(error);
     });
 
     return (

@@ -5,6 +5,7 @@ import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 import React, { useEffect, useState } from "react";
 import formatDate from "../hooks/formatDate";
+import NoteEditButton from "../buttons/NoteEditButton";
 
 export default function NoteCard({ noteData, noteId }) {
     const [date, setDate] = useState('');
@@ -29,7 +30,7 @@ export default function NoteCard({ noteData, noteId }) {
                     </Typography>
                 </CardContent>
                 <CardActions>
-                    <Button size="small">Edit</Button>
+                    <NoteEditButton noteId={noteId} noteTitle={noteData.title}/>
                 </CardActions>
             </Card>
         </React.Fragment>

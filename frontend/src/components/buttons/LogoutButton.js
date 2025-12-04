@@ -20,7 +20,7 @@ export default function LogoutButton() {
             const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/logout`, null, { withCredentials: true });
 
             setUser(null);
-            localStorage.clear();
+            localStorage.removeItem('user');
         } catch (e) {
             console.log(e);
         }
