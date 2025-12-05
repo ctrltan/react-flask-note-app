@@ -11,6 +11,7 @@ import AppBar from "@mui/material/AppBar";
 import Typography from "@mui/material/Typography";
 import { useContext } from "react";
 import { UserContext } from "../../App";
+import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -18,6 +19,19 @@ const drawerWidth = 240;
 
 export default function SideBar() {
     const {user, setUser} = useContext(UserContext);
+    const nav = useNavigate();
+
+    const getAllNotes = () => {
+        nav('/notes');
+    }
+
+    const getUserNotes = () => {
+        nav('/notes?filter=user');
+    }
+
+    const getSharedNotes = () => {
+        nav('/notes?filter=shared');
+    }
 
     return (
         <div>
@@ -39,13 +53,21 @@ export default function SideBar() {
                 </Toolbar>
                 
                 <List>
-                {['All Notes', 'Your Notes', 'Shared Notes'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                    <ListItemButton>
-                        <ListItemText primary={text} />
+                    <ListItem disablePadding>
+                    <ListItemButton onClick={getAllNotes}>
+                        <ListItemText>All Notes</ListItemText>
                     </ListItemButton>
                     </ListItem>
-                ))}
+                    <ListItem disablePadding>
+                    <ListItemButton onClick={getUserNotes}>
+                        <ListItemText>Your Notes</ListItemText>
+                    </ListItemButton>
+                    </ListItem>
+                    <ListItem disablePadding>
+                    <ListItemButton onClick={getSharedNotes}>
+                        <ListItemText>Shared Notes</ListItemText>
+                    </ListItemButton>
+                    </ListItem>
                 </List>
                 <List style={{ position: 'absolute', bottom: 0 }}>
                     <ListItem>

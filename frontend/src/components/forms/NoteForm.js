@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react"
 import React from "react";
 import { protectedClient } from "../wrappers/ProtectedRoute";
 import NoteSaveButton from "../buttons/NoteSaveButton";
+import NoteDeleteButton from "../buttons/NoteDeleteButton";
 
 
 export default function NoteForm({ noteData }) {
@@ -80,7 +81,7 @@ export default function NoteForm({ noteData }) {
 
     const idleSave = () => {
         if (saveTimer.current) clearTimeout(saveTimer.current);
-        saveTimer.current = setTimeout(autoSave, 1000);
+        saveTimer.current = setTimeout(autoSave, 3000);
     }
 
     useEffect(() => {
@@ -95,11 +96,18 @@ export default function NoteForm({ noteData }) {
             }
         }
 
+        const browserNavHandler = () => {
+            hardSave();
+            if (online) localStorage.removeItem(`note-${noteData.note_id}`);
+        }
+
         document.addEventListener('visibilitychange', visibilityHandler);
         window.addEventListener('pagehide', hideHandler);
+        window.addEventListener('popstate', browserNavHandler);
         return () => {
             document.removeEventListener('visibilitychange', visibilityHandler);
             window.removeEventListener('pagehide', hideHandler);
+            window.removeEventListener('popstate', browserNavHandler);
         }
     }, [])
 
@@ -118,7 +126,7 @@ export default function NoteForm({ noteData }) {
                             idleSave()
                         }}
                         />
-                        <Button>Add Friends</Button>
+                        <Button disabled>Add Friends</Button>
                     </Stack>
                 </FormControl>
                 <Card sx={{ p: 2 }}>
@@ -140,7 +148,7 @@ export default function NoteForm({ noteData }) {
                         <Typography sx={{ flexGrow: 1 }}></Typography>
                         <Typography>{message}</Typography>
                         <Typography sx={{ flexGrow: 1 }}></Typography>
-                        <Button>Delete</Button>
+                        <NoteDeleteButton noteId={noteData.note_id}/>
                     </Stack>
                 </Card>
             </Box>

@@ -46,7 +46,7 @@ def get_all_notes(cur=None):
 
         remaining_ids = tuple(cache_misses)
 
-        cur.execute('''SELECT * FROM notes WHERE note_id IN %s ORDER BY last_accessed DESC;''', (remaining_ids,))
+        cur.execute('''SELECT * FROM notes WHERE note_id IN %s ORDER BY last_accessed ASC;''', (remaining_ids,))
         raw_notes = cur.fetchall()
 
         for note in raw_notes:
@@ -194,18 +194,18 @@ def delete_note(cur=None):
         delete from retry queue if in queue
         '''
 
-        cur.execute('''SELECT EXISTS(SELECT 1 FROM notes WHERE note_id=%s and username=%s);''', (note_id, username))
+        cur.execute('''SELECT EXISTS(SELECT 1 FROM notes WHERE note_id=%s and created_by=%s);''', (note_id, username))
         exists = cur.fetchone()[0]
 
         if exists:
-            cur.execute('''DELETE FROM notes WHERE note_id=%s and username=%s;''', (note_id,))
+            cur.execute('''DELETE FROM notes WHERE note_id=%s and created_by=%s;''', (note_id, username))
             delete_note_hset(note_id)
         else:
             cur.execute('''DELETE FROM note_owners WHERE note_id=%s and user_id=%s;''', (note_id, user_id))
         
         response = make_response(jsonify({'message': 'Note deleted'}))
         
-        response, 200
+        return response, 200
     except Exception as ex:
         noteLogger.exception(ex)
         return {'message': 'Could not delete this note'}, 500
