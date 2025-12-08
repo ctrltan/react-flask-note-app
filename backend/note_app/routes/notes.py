@@ -173,7 +173,7 @@ def save_note(cur=None):
         Trigger retry by pushing the note_id to the redis queue under the user's id (should be managed across sessions for one user)
         celery worker
         '''
-        return 
+        return {'message': "We'll try again"}, 500
     except Exception as ex:
         noteLogger.exception(ex)
         return {'message': "Your note could not be saved"}, 500
