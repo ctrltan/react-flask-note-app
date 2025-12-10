@@ -23,6 +23,7 @@ jobs:
         AES_ENCRYPTION_KEY: ${{ secrets.AES_ENCRYPTION_KEY }}
         AES_INITIALISATION_VECTOR: ${{ secrets.AES_INITIALISATION_VECTOR }}
         JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+        FLASK_APP_CLIENT_URL: ${{ vars.FLASK_APP_CLIENT_URL }}
 
     steps:
       - name: Checkout code

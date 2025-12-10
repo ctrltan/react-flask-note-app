@@ -10,8 +10,6 @@ export default function ProtectedRoute() {
     const [auth, setAuth] = useState(true);
     const nav = useNavigate();
 
-    console.log('checking...');
-
     const refreshRetry = async () => {
         const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/refresh`, { 
             'user_id': user['userId'],
@@ -21,19 +19,19 @@ export default function ProtectedRoute() {
 
     protectedClient.interceptors.response.use(response => {
         return response;
-    }, error => {
+    }, async error => {
         const request = error.config;
         if (error.response.status === 401 && !request._retry) {
             try {
-                request._true = true;
-                refreshRetry();
+                request._retry = true;
+                await refreshRetry();
                 return axios(request);
             } catch (e) {
                 nav('/logout');
             }
         }
 
-        Promise.reject(error);
+        return Promise.reject(error);
     });
 
     return (

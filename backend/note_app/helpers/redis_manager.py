@@ -3,19 +3,57 @@ from redis.cache import CacheConfig
 from collections import deque
 from datetime import datetime, timedelta
 from note_app.helpers.helper_utils import REDIS_USER, REDIS_PASSWORD, REDIS_PORT
+import logging
 
+redisLogger = logging.getLogger('redis manager')
 
 class RedisManager:
 
+    pool = None
+
     def __init__(self):
-        self.r = redis.Redis(
-            host=f'redis-{REDIS_PORT}.crce204.eu-west-2-3.ec2.redns.redis-cloud.com',
-            port=int(REDIS_PORT),
-            decode_responses=True,
-            username=REDIS_USER,
-            password=REDIS_PASSWORD,
-        )
+        if RedisManager.pool is None:
+            RedisManager.pool = redis.ConnectionPool(
+                    host=f'redis-{REDIS_PORT}.crce204.eu-west-2-3.ec2.redns.redis-cloud.com',
+                    port=int(REDIS_PORT),
+                    decode_responses=True,
+                    username=REDIS_USER,
+                    password=REDIS_PASSWORD,
+                )
+        self.r = redis.Redis(connection_pool=RedisManager.pool)
+
+
+    def add_hset(self, key: str, value: dict) -> bool:
+        try:
+            expiryRequired = True
+            occurrences = self.r.exists(key)
+            if occurrences == 1:
+                expiryRequired = False
+            
+            self.r.hset(key, mapping=value)
+            if expiryRequired:
+                self.r.expire(key, time=timedelta(days=10))
+            return True
+        except Exception as ex:
+            redisLogger.exception(ex)
+            return False
+        
+    def get_hset(self, key: str) -> dict | None:
+        try:
+            mapping = self.r.hgetall(key)
+            return mapping
+        except Exception as ex:
+            redisLogger.exception(ex)
+            return None
     
+    def delete_hset(self, key: str) -> bool:
+        try:
+            self.r.expire(key, -1)
+            return True
+        except Exception as ex:
+            redisLogger.exception(ex)
+            return False
+
     def add_session_key(self, session_id: str, user_id: str, refresh_token: str):
         try:
             self.r.hset(f'session_id:{session_id}', mapping={
@@ -24,7 +62,7 @@ class RedisManager:
             })
             self.r.expire(f'session_id:{session_id}', time=timedelta(days=30))
         except Exception as ex:
-            print(ex)
+            redisLogger.exception(ex)
     
     def get_session(self, session_id: str) -> dict | None:
         try:
@@ -34,7 +72,7 @@ class RedisManager:
         
             return self.r.hkeys(f'session_id:{session_id}')
         except Exception as ex:
-            print(ex)
+            redisLogger.exception(ex)
             return None
     
     def valid_session(self, session_id: str) -> bool:
@@ -45,7 +83,7 @@ class RedisManager:
             
             return True
         except Exception as ex:
-            print(ex)
+            redisLogger.exception(ex)
             return False
 
 
@@ -54,5 +92,5 @@ class RedisManager:
             self.r.expire(f'session_id:{session_id}', -1)
             return True
         except Exception as ex:
-            print(ex)
+            redisLogger.exception(ex)
             return False

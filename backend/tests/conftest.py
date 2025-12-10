@@ -19,6 +19,21 @@ def client():
             yield client
 
 @pytest.fixture
+def authenticated_client(client):
+    access_claims = {'user_id': 1, 'session_id': 1, 'username': 'janedoe'}
+
+    access_token = create_access_token('1', expires_delta=False, additional_claims=access_claims)
+    refresh_token = create_refresh_token('1', expires_delta=False)
+
+    client.set_cookie('access_token', access_token)
+    client.set_cookie('refresh_token', refresh_token)
+    
+    yield client
+
+    client.delete_cookie('access_token')
+    client.delete_cookie('refresh_token')
+
+@pytest.fixture
 def cookies():
     access_claims = {'user_id': 1, 'session_id': 1, 'username': 'janedoe'}
     

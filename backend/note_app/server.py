@@ -3,12 +3,14 @@ from note_app.helpers.decorators import db_connector
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
-#from note_app.helpers.helper_utils import JWT_SECRET_KEY
 import os
 from dotenv import load_dotenv
+import logging
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True, origins=os.getenv('FLASK_APP_CLIENT_URL') or '*')
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 load_dotenv('.env')
 
