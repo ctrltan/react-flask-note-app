@@ -10,8 +10,6 @@ export default function ProtectedRoute() {
     const [auth, setAuth] = useState(true);
     const nav = useNavigate();
 
-    console.log('checking...');
-
     const refreshRetry = async () => {
         const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/refresh`, { 
             'user_id': user['userId'],

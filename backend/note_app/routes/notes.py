@@ -45,9 +45,11 @@ def get_all_notes(cur=None):
                 notes[id] = cached_note
 
         remaining_ids = tuple(cache_misses)
+        raw_notes = []
 
-        cur.execute('''SELECT * FROM notes WHERE note_id IN %s ORDER BY last_accessed ASC;''', (remaining_ids,))
-        raw_notes = cur.fetchall()
+        if remaining_ids:
+            cur.execute('''SELECT * FROM notes WHERE note_id IN %s ORDER BY last_accessed ASC;''', (remaining_ids,))
+            raw_notes = cur.fetchall()
 
         for note in raw_notes:
             note_id = note[0]
