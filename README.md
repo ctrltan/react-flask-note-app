@@ -74,3 +74,7 @@ Users should have up to date notes and be able to continue editing even if a sav
 My approach to this problem is to in the event the client loses conneciton the server, notes that are currently being edited are stored in the client's `local storage`. When the client polls the server, looking to send the note data, if it is back online then the note will be saved to Redis under the `note-id`. This process will be triggered whenever the user stops typing, as opposed to periodically polling the server even when changes have not been made. When the user hits 'save' or leaves the page, the note in Redis will be saved to the PostgreSQL database. If the note saves, it will stay in Redis for a set TTL, available for fast access if the user requests it again. If the note save fails, a server function will queue the `note_id` and periodically check the database for an available connection and save the note when available:
 - Reduces load on primary, PostgreSQL database by relying on secondary data stores to manage frequent access and editing which provides a faster user experience
 - Improves fault-tolerance of note-saving across client and server
+
+✅ Autosave and manual save logic
+⏰ Implement Celery worker for note save retry w/ Redis queue as message broker
+⏰ Add time jitter to Redis TTLs and decide TTL extension strategy
