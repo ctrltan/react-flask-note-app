@@ -7,6 +7,10 @@ import logging
 
 redisLogger = logging.getLogger('redis manager')
 
+'''
+add jitter to all expiries -> time percentage
+'''
+
 class RedisManager:
 
     pool = None
@@ -21,7 +25,6 @@ class RedisManager:
                     password=REDIS_PASSWORD,
                 )
         self.r = redis.Redis(connection_pool=RedisManager.pool)
-
 
     def add_hset(self, key: str, value: dict) -> bool:
         try:

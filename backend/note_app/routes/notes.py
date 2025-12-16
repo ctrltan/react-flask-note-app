@@ -1,4 +1,5 @@
 from flask import Blueprint, request, make_response, jsonify
+from note_app.tasks import save_retry
 from note_app.helpers.decorators import db_connector
 from note_app.helpers.auth_functions import token_decoder
 from note_app.helpers.caching_functions import add_note_hset, get_note_hset, delete_note_hset
@@ -162,7 +163,7 @@ def save_note(cur=None):
         success = add_note_hset(note_data['note_id'], note_data)
         if not success:
             raise Exception('Cache saving failed')
-
+    
         client_last_access = note_data['last_accessed']
         last_accessed = datetime.fromisoformat(client_last_access)
 
@@ -170,12 +171,13 @@ def save_note(cur=None):
 
         return {'message': 'Your note was saved!'}, 200
     except OperationalError as ex:
-        noteLogger.exception(ex)
         '''
         Trigger retry by pushing the note_id to the redis queue under the user's id (should be managed across sessions for one user)
         celery worker
         '''
-        return {'message': "We'll try again"}, 500
+        res = save_retry.delay(note_data['note_id'])
+
+        return {'message': "We'll try again"}, 200
     except Exception as ex:
         noteLogger.exception(ex)
         return {'message': "Your note could not be saved"}, 500
