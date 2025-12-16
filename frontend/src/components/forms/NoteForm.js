@@ -105,9 +105,13 @@ export default function NoteForm({ noteData }) {
         window.addEventListener('pagehide', hideHandler);
         window.addEventListener('popstate', browserNavHandler);
         return () => {
-            document.removeEventListener('visibilitychange', visibilityHandler);
-            window.removeEventListener('pagehide', hideHandler);
-            window.removeEventListener('popstate', browserNavHandler);
+            setTimeout(() => {
+                document.removeEventListener('visibilitychange', visibilityHandler);
+                window.removeEventListener('pagehide', hideHandler);
+                window.removeEventListener('popstate', browserNavHandler);
+                const res = protectedClient.post(`${process.env.REACT_APP_BACKEND_URL}/notes/schedule-save`, {'note_id': noteData.note_id});
+                if (online) localStorage.removeItem(`note-${noteData.note_id}`);
+            }, 0)
         }
     }, [])
 

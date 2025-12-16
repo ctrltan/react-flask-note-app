@@ -181,6 +181,19 @@ def save_note(cur=None):
     except Exception as ex:
         noteLogger.exception(ex)
         return {'message': "Your note could not be saved"}, 500
+
+@notes.route('/notes/schedule-save', methods=['POST'])
+def schedule_save(cur=None):
+    note_data = request.get_json()
+    note_id = int(note_data['note_id'])
+
+    try:
+        res = save_retry.delay(note_id)
+        
+        return {'message': 'Save scheduled'}, 200
+    except Exception as ex:
+        noteLogger.exception(ex)
+        return {'message': 'Save could not be scheduled'}, 500
     
 @notes.route('/notes/delete', methods=['DELETE'])
 @db_connector()

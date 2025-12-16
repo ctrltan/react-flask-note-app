@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { UserContext } from "../../App";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,8 @@ import Stack from "@mui/material/Stack";
 import MuiCard from '@mui/material/Card';
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
+import React from "react";
+import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 
 const LoginContainer = styled(Stack)(({ theme }) => ({
   height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
@@ -72,18 +74,34 @@ const buttonTheme = createTheme({
     }
 });
 
+function LoadingIcon() {
+    return (
+        <React.Fragment>
+            <MoreHorizRoundedIcon />
+        </React.Fragment>
+    )
+}
+
 export default function LoginForm() {
     const [username, setUsername] = useState(''); 
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState(null);
+
     const [passwordError, setPasswordError] = useState(false);
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
     const [usernameError, setUsernameError] = useState(false);
     const [usernameErrorMessage, setUsernameErrorMessage] = useState('');
+
+    const [btnDisabled, setBtnDisabled] = useState(false);
+    const [btnMessage, setBtnMessage] = useState('Login');
+
     const {user, setUser} = useContext(UserContext);
+
     const nav = useNavigate();
 
     const postLogin = async () => {
+        setBtnDisabled(true);
+        setBtnMessage(LoadingIcon);
         if (user === null) {
             try {
                 const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`, {
@@ -93,6 +111,8 @@ export default function LoginForm() {
 
                 if (typeof res.data.message === 'string') {
                     setMessage(res.data.message);
+                    setBtnDisabled(false);
+                    setBtnMessage('Login');
                     return;
                 };
                 setMessage('');
@@ -102,6 +122,8 @@ export default function LoginForm() {
 
                 nav('/notes');
             } catch (e) {
+                setBtnDisabled(false);
+                setBtnMessage('Login');
                 console.log(e);
             };
         } else {
@@ -152,8 +174,9 @@ export default function LoginForm() {
                             type="submit"
                             fullWidth
                             variant="contained"
+                            disabled={btnDisabled}
                         >
-                        Login
+                        {btnMessage}
                         </Button>
                         <Typography sx={{ textAlign: 'center' }}>
                         Haven't got an account?{' '}
