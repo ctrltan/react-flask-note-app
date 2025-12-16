@@ -77,6 +77,8 @@ My approach to this problem is to in the event the client loses conneciton the s
 
 ✅ Autosave and manual save logic
 
-⏰ Implement Celery worker for note save retry w/ Redis queue as message broker
+✅ Implement Celery worker for note save retry w/ Redis queue as message broker
 
-⏰ Add time jitter to Redis TTLs and decide TTL extension strategy
+✅ Add time jitter to Redis TTLs 
+
+⏰ Decide TTL extension strategy
