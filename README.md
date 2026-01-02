@@ -10,6 +10,7 @@ This is NoteTogether! A note-taking app with collaborative note-taking capabilit
 ![Python](https://img.shields.io/badge/python-3670A0?style=flat-square&logo=python&logoColor=ffdd54)
 ![Flask](https://img.shields.io/badge/Flask-000000?style=flat-square&logo=Flask&logoColor=white)
 ![Pytest](https://img.shields.io/badge/Pytest-green?logo=pytest&style=flat-square)
+![Celery](https://img.shields.io/badge/celery-%23a9cc54.svg?style=flat-square&logo=celery&logoColor=ddf4a4)
 
 ### Frontend
 ![JavaScript](https://shields.io/badge/JavaScript-F7DF1E?logo=JavaScript&logoColor=000&style=flat-square)
