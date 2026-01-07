@@ -1,4 +1,5 @@
 import redis
+import random
 from redis.cache import CacheConfig
 from collections import deque
 from datetime import datetime, timedelta
@@ -6,6 +7,8 @@ from note_app.helpers.helper_utils import REDIS_USER, REDIS_PASSWORD, REDIS_PORT
 import logging
 
 redisLogger = logging.getLogger('redis manager')
+
+jitter = lambda hours: random.randint(-1*hours*3600*0.1, hours*3600*0.1)
 
 class RedisManager:
 
@@ -22,7 +25,6 @@ class RedisManager:
                 )
         self.r = redis.Redis(connection_pool=RedisManager.pool)
 
-
     def add_hset(self, key: str, value: dict) -> bool:
         try:
             expiryRequired = True
@@ -32,7 +34,7 @@ class RedisManager:
             
             self.r.hset(key, mapping=value)
             if expiryRequired:
-                self.r.expire(key, time=timedelta(days=10))
+                self.r.expire(key, time=timedelta(days=3, seconds=jitter(12)))
             return True
         except Exception as ex:
             redisLogger.exception(ex)
@@ -60,7 +62,7 @@ class RedisManager:
                 'user_id': user_id,
                 'refresh_token': refresh_token
             })
-            self.r.expire(f'session_id:{session_id}', time=timedelta(days=30))
+            self.r.expire(f'session_id:{session_id}', time=timedelta(days=30, seconds=jitter(24)))
         except Exception as ex:
             redisLogger.exception(ex)
     

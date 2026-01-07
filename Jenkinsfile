@@ -9,7 +9,7 @@ pipeline {
         AES_ENCRYPTION_KEY = credentials('AES_ENCRYPTION_KEY')
         AES_INITIALISATION_VECTOR = credentials('AES_INITIALISATION_VECTOR')
         JWT_SECRET_KEY = credentials('JWT_SECRET_KEY')
-        PROD_URL = 'https://note-together-api.onrender.com'
+        PROD_URL = 'https://api.note-together.onrender.com'
         PATH = "/usr/local/bin:${env.PATH}"
     }
     stages {
